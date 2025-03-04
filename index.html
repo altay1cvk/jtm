@@ -2,118 +2,186 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Jeu de l'Amour ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
     <style>
+        :root { /* Variables CSS pour une maintenance facile */
+            --primary-color: #ff69b4; /* Rose vif */
+            --secondary-color: #ff1493; /* Rose foncé */
+            --background-gradient: linear-gradient(135deg, #ffb3ba, #ffdfba); /* Dégradé pêche */
+            --card-bg: white;
+            --text-color: #333; /* Gris foncé pour le texte */
+            --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --heart-size: 30px; /* Taille de base des coeurs */
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ffb3ba, #ffdfba);
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Parisienne', cursive;  /* Police romantique */
+            background: var(--background-gradient);
+            color: var(--text-color);
+            min-height: 100vh; /* Important pour que le dégradé couvre tout */
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px;
-            touch-action: none;
+            overflow: hidden;  /* Empêche le scroll */
         }
-
+        /* Cœurs plus beaux */
         #hearts-container {
-            position: fixed;
+             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            pointer-events: none; /* Pour que les clics passent à travers */
             z-index: 1;
         }
 
         .heart {
             position: absolute;
-            width: 30px;
-            height: 30px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff69b4" stroke="%23ff1493" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
-            background-size: contain;
-            transform-origin: center;
+            width: var(--heart-size);
+            height: var(--heart-size);
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff69b4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center/contain;
+           animation: fall linear infinite; /* Animation plus propre */
             opacity: 0.6;
         }
 
+         /* Animation des coeurs, plus paramétrable */
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg); /* Commence au-dessus */
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg); /* Va en dessous */
+            }
+        }
+
         #game-container {
-            position: relative;
+            position: relative; /* Pour le z-index */
             z-index: 10;
             width: 90%;
-            max-width: 400px;
-            perspective: 1000px;
+            max-width: 400px; /* Limite la taille sur grands écrans */
+            perspective: 1000px; /* Effet 3D */
         }
 
         .card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 15px;
-            padding: 20px;
-            margin: 15px 0;
+            margin: 15px 0;  /* Espace entre les cartes */
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.6s; /* Animation de retournement */
+            transform-style: preserve-3d; /* Nécessaire pour le 3D */
             cursor: pointer;
-        }
+            position: relative; /* Important pour les faces avant/arrière */
+            height: 150px; /* Hauteur fixe, pour l'homogénéité*/
 
+        }
+         /* Animation de rotation des cartes */
         .card.flipped {
             transform: rotateY(180deg);
         }
 
         .card-front, .card-back {
-            backface-visibility: hidden;
-            position: absolute;
+            position: absolute; /* Superposition des faces */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
+            display: flex; /* Centrage du contenu */
             justify-content: center;
             align-items: center;
+            backface-visibility: hidden; /* Cache la face arrière */
+             border-radius: 15px; /*bords arrondis*/
         }
 
         .card-front {
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
-            color: white;
+            background: var(--background-gradient);
+            color: var(--card-bg);
             font-size: 3em;
+            font-weight: bold; /* Texte plus visible */
         }
 
         .card-back {
-            transform: rotateY(180deg);
-            background: white;
-            flex-direction: column;
+            transform: rotateY(180deg); /* Dos de la carte, retourné */
+            background: var(--card-bg);
+            flex-direction: column; /* Contenu en colonne */
+            padding: 20px; /* Espace autour du texte */
         }
 
         .card-back h3 {
-            color: #ff1493;
+            color: var(--primary-color);
             margin-bottom: 10px;
+            font-size: 1.8em; /* Titres plus grands */
+        }
+        .card-back p {
+            font-size: 1.2em; /* Texte plus grand */
+            line-height: 1.4; /* Meilleure lisibilité */
         }
 
         #final-message {
-            display: none;
-            background: white;
+           display: none; /* Caché au début */
+            background: var(--card-bg);
             border-radius: 15px;
-            padding: 20px;
+            padding: 30px; /* Plus d'espace */
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            position: fixed;
+            box-shadow: var(--box-shadow);
+            position: fixed; /* Reste fixe même si on scroll (peu probable ici) */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 100;
+            z-index: 100; /* Au-dessus de tout */
             max-width: 90%;
         }
+
+        #final-message h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 2.5em; /* Titre plus grand */
+        }
+
+         #final-message p {
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        /* Style pour mobile */
+        @media (max-width: 768px) {
+            .card {
+                height: auto; /* La hauteur s'adapte au contenu */
+                 min-height: 120px; /* Hauteur minimale */
+            }
+            .card-front{
+                font-size: 2em;
+            }
+            .card-back h3{
+                font-size: 1.3em;
+            }
+            .card-back p{
+                font-size: 1em;
+            }
+            #final-message h2{
+                font-size: 1.8em;
+            }
+            #final-message p{
+                font-size: 1.1em;
+            }
+        }
+
+
     </style>
 </head>
 <body>
     <div id="hearts-container"></div>
-    
+
     <div id="game-container">
         <div id="cards-container"></div>
     </div>
@@ -124,121 +192,114 @@
     </div>
 
     <script>
-        // Heart Falling Animation
-        const heartsContainer = document.getElementById('hearts-container');
-        const cardsContainer = document.getElementById('cards-container');
-        const finalMessage = document.getElementById('final-message');
+    const heartsContainer = document.getElementById('hearts-container');
+    const cardsContainer = document.getElementById('cards-container');
+    const finalMessage = document.getElementById('final-message');
 
-        const cardData = [
-            { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
-            { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
-            { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
-            { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." }
-        ];
+    const cardData = [
+        { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
+        { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
+        { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
+        { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." }
+    ];
 
-        // Create Falling Hearts
-        function createFallingHearts() {
-            for (let i = 0; i < 50; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart');
-                
-                // Random initial position
-                heart.style.left = `${Math.random() * 100}%`;
-                heart.style.top = `${Math.random() * -50}%`;
-                
-                // Random size
-                const size = 20 + Math.random() * 40;
-                heart.style.width = `${size}px`;
-                heart.style.height = `${size}px`;
-                
-                heartsContainer.appendChild(heart);
+
+    function createFallingHearts() {
+        for (let i = 0; i < 50; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heartsContainer.appendChild(heart);
+
+            // Position, taille et animation aléatoires
+            resetHeart(heart);
+        }
+    }
+
+    // Réinitialise un cœur pour l'animation
+    function resetHeart(heart) {
+        const size = 10 + Math.random() * 30; // Taille variable
+        const speed = 2 + Math.random() * 3;    // Vitesse variable
+        const startX = Math.random() * 100;   // Position horizontale
+
+        heart.style.width = `${size}px`;
+        heart.style.height = `${size}px`;
+        heart.style.left = `${startX}vw`;
+        heart.style.top = '-10vh';  // Commence au-dessus
+        heart.style.animationDuration = `${speed}s`;
+    }
+
+
+    // Animation via requestAnimationFrame, plus performant
+     function animateHearts() {
+        const hearts = document.querySelectorAll('.heart');
+        hearts.forEach(heart => {
+            // Pas besoin de récupérer la position, l'animation CSS s'en charge
+            const top = parseFloat(heart.style.top);
+            if (top>110){
+                resetHeart(heart);
             }
-        }
 
-        // Animate Falling Hearts
-        function animateHearts() {
-            const hearts = document.querySelectorAll('.heart');
-            hearts.forEach(heart => {
-                const currentTop = parseFloat(heart.style.top);
-                const newTop = currentTop + 1;
-                
-                heart.style.top = `${newTop}%`;
-                
-                // Reset heart if it goes below screen
-                if (newTop > 100) {
-                    heart.style.top = `${Math.random() * -50}%`;
-                    heart.style.left = `${Math.random() * 100}%`;
-                }
-            });
-        }
+        });
+        requestAnimationFrame(animateHearts); // Continue l'animation
+    }
 
-        // Create Cards
-        function createCards() {
-            cardData.forEach((card, index) => {
-                const cardElement = document.createElement('div');
-                cardElement.classList.add('card');
-                
-                cardElement.innerHTML = `
-                    <div class="card-front">?</div>
-                    <div class="card-back">
-                        <h3>${card.title}</h3>
-                        <p>${card.text}</p>
-                    </div>
-                `;
-                
-                cardElement.addEventListener('click', () => {
+    function createCards() {
+        cardData.forEach((card) => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            cardElement.innerHTML = `
+                <div class="card-front">?</div>
+                <div class="card-back">
+                    <h3>${card.title}</h3>
+                    <p>${card.text}</p>
+                </div>
+            `;
+            cardElement.addEventListener('click', () => {
+                if (!cardElement.classList.contains('flipped')){ //empeche de recliquer
                     cardElement.classList.add('flipped');
                     checkAllCardsFlipped();
-                });
-                
-                cardsContainer.appendChild(cardElement);
+                }
             });
-        }
+            cardsContainer.appendChild(cardElement);
+        });
+    }
 
-        // Check if all cards are flipped
-        function checkAllCardsFlipped() {
-            const cards = document.querySelectorAll('.card');
-            const flippedCards = document.querySelectorAll('.card.flipped');
-            
-            if (cards.length === flippedCards.length) {
-                setTimeout(() => {
-                    finalMessage.style.display = 'block';
-                }, 500);
-            }
+    function checkAllCardsFlipped() {
+        const flippedCards = document.querySelectorAll('.card.flipped');
+        if (flippedCards.length === cardData.length) {
+             // Délai pour voir la dernière carte
+            setTimeout(() => {
+                finalMessage.style.display = 'block';
+                 // Animation d'apparition (optionnel, nécessite une librairie comme GSAP)
+                // gsap.from(finalMessage, { opacity: 0, y: 50, duration: 0.5 });
+            }, 600);
         }
+    }
 
-        // Device Orientation Handling
-        function handleOrientation(event) {
-            const hearts = document.querySelectorAll('.heart');
-            
-            // Use beta and gamma for tilt
-            const beta = event.beta;  // Front to back tilt
-            const gamma = event.gamma; // Side to side tilt
-            
-            hearts.forEach(heart => {
-                heart.style.transform = `
-                    rotate(${beta}deg) 
-                    skew(${gamma}deg)
-                `;
-            });
+
+     function handleOrientation(event) {
+      //  const hearts = document.querySelectorAll('.heart');
+      //  const beta = event.beta;
+       // const gamma = event.gamma;
+        //inutile avec l'approche de l'animation CSS
+    }
+
+
+    function init() {
+        createFallingHearts();
+        createCards();
+        animateHearts(); // Utilisation de requestAnimationFrame
+
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+            // Message si l'orientation n'est pas supportée (optionnel)
+            console.log("Device orientation not supported");
         }
+    }
 
-        // Initial Setup
-        function init() {
-            createFallingHearts();
-            createCards();
-            
-            // Falling hearts animation
-            setInterval(animateHearts, 50);
-            
-            // Device orientation
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener('deviceorientation', handleOrientation);
-            }
-        }
+    init();
 
-        // Start the game
-        init();
     </script>
 </body>
 </html>
