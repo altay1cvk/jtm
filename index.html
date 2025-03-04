@@ -5,419 +5,240 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Le Jeu de l'Amour ❤️</title>
     <style>
-        /* --- CSS --- */
-        body {
-            font-family: 'Patrick Hand', cursive; /* Police manuscrite */
+        * {
             margin: 0;
-            overflow: hidden; /* Pas de scroll au début */
-            background: linear-gradient(to bottom, #fcebeb, #ffdddd);
-            color: #6b0f1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffb3ba, #ffdfba);
             height: 100vh;
-            perspective: 1000px; /* Effet 3D pour les cartes */
-        }
-
-        #loading-screen {
-            /* ... (style de l'écran de chargement, comme avant) ... */
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 235, 235, 0.95);
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            perspective: 1000px;
+            touch-action: none;
         }
-         #loading-screen img {
-             width: 120px; /* Légèrement plus petit */
-             margin-bottom: 15px;
-             animation: pulse 1.5s infinite ease-in-out; /* Animation de pulsation */
-         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        #main-content {
-            position: relative; /* Pour les cartes et le cœur */
+        #hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Caché au début */
+            pointer-events: none;
+            z-index: 1;
         }
 
-        /* --- Cartes --- */
-        #card-container {
+        .heart {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 30px;
+            height: 30px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff69b4" stroke="%23ff1493" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: contain;
+            transform-origin: center;
+            opacity: 0.6;
+        }
+
+        #game-container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 400px;
+            perspective: 1000px;
         }
 
         .card {
-            position: absolute; /* Positionnement absolu */
-            top: 0;
-            left: 0;
-            width: 250px; /* Largeur fixe */
-            height: 350px; /* Hauteur fixe */
-            background-color: rgba(255, 255, 255, 0.9);
+            background: white;
             border-radius: 15px;
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
+            margin: 15px 0;
             text-align: center;
-            backface-visibility: hidden; /* Cache l'arrière de la carte */
-            transition: transform 0.8s ease-in-out; /* Transition pour le retournement */
-            cursor: pointer; /* Indique que la carte est cliquable */
-           transform-style: preserve-3d; /* Nécessaire pour la rotation 3D */
-
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
         }
 
         .card.flipped {
-            transform: rotateY(180deg); /* Retourne la carte */
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .card-front {
-            /* Style du recto de la carte (par exemple, un point d'interrogation) */
-            font-size: 4em;
-            color: #e83e8c;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            font-size: 3em;
         }
 
         .card-back {
-            /* Style du verso de la carte (contenu révélé) */
-            transform: rotateY(180deg); /* Verso initialement retourné */
-
+            transform: rotateY(180deg);
+            background: white;
+            flex-direction: column;
         }
 
         .card-back h3 {
-            font-size: 1.5em;
-            margin-bottom: 0.5em;
-            color: #800020;
-        }
-        .card-back p {
-           font-size: 1.1em;
-            margin-bottom: 0.5em;
+            color: #ff1493;
+            margin-bottom: 10px;
         }
 
-        /* --- Cœur 3D --- */
-        #heart-container {
-            position: absolute;
-            top: 20px; /* Position ajustée */
-            right: 20px;
-            width: 80px;  /* Plus petit */
-            height: 80px;
-        }
-
-        #heart-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* --- Message Final --- */
         #final-message {
-            position: absolute;
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            text-align: center;
-            padding: 30px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-            display: none; /* Caché au début */
-            z-index: 100; /* Au-dessus des cartes */
-        }
-
-        #final-message h2 {
-            font-size: 2em;
-            margin-bottom: 0.5em;
-            color: #a41f39;
-        }
-
-         #final-message p{
-            font-size: 1.1em;
-            margin-bottom: 0.5em;
-
-        }
-
-        #poem {
-            font-style: italic;
-        }
-
-        #poem h3 {
-            font-size: 1.6em;
-            color: #800020;
-        }
-
-        /* --- Progress Bar --- */
-       #progress-container {
-           position: fixed;
-           bottom: 0; left: 0; width: 100%;
-           height: 6px;
-           background-color: #eee;
-           z-index: 3000; /* Au-dessus des cartes */
-       }
-
-       #progress-bar {
-           height: 100%;
-           width: 0;
-           background-color: #e83e8c;
-           transition: width 0.3s ease;
-       }
-
-         /* --- Media Queries (adaptations) --- */
-        @media (max-width: 480px) {
-            .card {
-                width: 80%;
-                height: auto;
-                max-width: 280px; /* Limite la taille */
-
-            }
-            #heart-container{
-              width: 65px;
-              height: 65px;
-            }
+            z-index: 100;
+            max-width: 90%;
         }
     </style>
 </head>
 <body>
-    <!-- Écran de Chargement -->
-     <div id="loading-screen">
-       <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23e83e8c' d='M73.2,31.6C67.5,25.3,58.7,28.8,58.7,36.7c0,4.5,4.1,7.7,8.6,7.7c3.1,0,6.2-1.7,7.9-3.4l0,0 c1.7,1.8,4.8,3.4,7.9,3.4c4.5,0,8.6-3.2,8.6-7.7C91.7,28.8,82.9,25.3,77.2,31.6L77.2,31.6L73.2,31.6z M50,0 C22.4,0,0,22.4,0,50s22.4,50,50,50s50-22.4,50-50S77.6,0,50,0z M26.8,68.4c-1.7-1.7-3.4-4.8-3.4-7.9c0-4.5,3.2-8.6,7.7-8.6 c3.1,0,6.2,1.7,7.9,3.4l0,0c1.7-1.7,4.8-3.4,7.9-3.4c4.5,0,8.6,3.2,8.6,7.7c0,7.9-8.8,11.4-14.5,17.7C40.5,82.8,28.5,70.1,26.8,68.4z M7.7,50c0-4.7,1-8.9,2.6-12.3C5,41,1.5,47.1,1.5,53.9c0,19,13,35.8,31.4,45.1C15.9,88,3.4,71.1,7.7,50z'/%3E%3C/svg%3E" alt="Chargement..." >
-        <p>Chargement du jeu de l'amour... ✨</p>
+    <div id="hearts-container"></div>
+    
+    <div id="game-container">
+        <div id="cards-container"></div>
     </div>
 
-
-    <!-- Contenu Principal -->
-    <div id="main-content">
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
-
-        <!-- Conteneur des Cartes -->
-        <div id="card-container">
-            <!-- Les cartes seront ajoutées ici par JavaScript -->
-        </div>
-
-        <!-- Cœur 3D -->
-        <div id="heart-container">
-            <canvas id="heart-canvas"></canvas>
-        </div>
-
-        <!-- Message Final -->
-        <div id="final-message">
-            <h2>Beril, Mon Amour Éternel</h2>
-            <p>Tu as découvert tous les secrets de mon cœur.  Tu es ma joie, ma lumière, mon inspiration.</p>
-            <div id="poem">
-                <h3>Senin İçin</h3>
-                <p lang="tr">
-                    Gözlerin, yıldızlar gibi parlar,<br>
-                    Güzelliğin, ruhumu sarar.<br>
-                    Seninle her an, bir rüya,<br>
-                    Aşkım sana, sonsuza...
-                </p>
-                <p>
-                    Tes yeux, brillent comme des étoiles,<br>
-                    Ta beauté, enveloppe mon âme.<br>
-                    Chaque instant avec toi est un rêve,<br>
-                    Mon amour pour toi, pour toujours...
-                </p>
-            </div>
-        </div>
+    <div id="final-message">
+        <h2>Mon Amour Éternel</h2>
+        <p>Tu as découvert tous les secrets de mon cœur. Tu es ma joie, ma lumière, mon inspiration.</p>
     </div>
 
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // --- JavaScript ---
+        // Heart Falling Animation
+        const heartsContainer = document.getElementById('hearts-container');
+        const cardsContainer = document.getElementById('cards-container');
+        const finalMessage = document.getElementById('final-message');
 
-        // --- Variables Globales ---
-        let scene, camera, renderer, heart;
-        let cardsData = [  // Données des cartes (titre, texte)
-            { title: "Premier Regard", text: "Comme une étoile filante, ton regard a illuminé mon ciel." },
-            { title: "Ton Sourire", text: "Un rayon de soleil qui a fait fondre la glace." },
-            { title: "Ta Voix", text: "Une mélodie douce et envoûtante qui résonne encore." },
-            { title: "Ta Présence", text: "Un voile de douceur et de mystère qui m'attire." }
+        const cardData = [
+            { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
+            { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
+            { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
+            { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." }
         ];
-        let flippedCards = 0; // Compteur de cartes retournées
-        let isFlipping = false; // Empêche de retourner plusieurs cartes à la fois
 
-        // --- Initialisation Three.js (Cœur) ---
-        function init3D() {
-             scene = new THREE.Scene();
-
-             // Ajuster la caméra pour qu'elle soit plus proche
-             camera = new THREE.PerspectiveCamera(60, 80 / 80, 0.1, 100); // FOV plus étroit
-             camera.position.z = 1.5; // Plus proche
-
-
-             renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('heart-canvas'), alpha: true });
-            renderer.setSize(80, 80);
-            renderer.setClearColor(0x000000, 0);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
-            scene.add(ambientLight);
-
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
-            dirLight.position.set(1, 1, 1);
-            scene.add(dirLight);
-
-             const heartShape = new THREE.Shape();
-             heartShape.moveTo( 25, 25 );
-             heartShape.bezierCurveTo( 25, 25, 20, 0, 0, 0 );
-             heartShape.bezierCurveTo( - 30, 0, - 30, 35, - 30, 35 );
-             heartShape.bezierCurveTo( - 30, 55, - 10, 77, 25, 95 );
-             heartShape.bezierCurveTo( 60, 77, 80, 55, 80, 35 );
-             heartShape.bezierCurveTo( 80, 35, 80, 0, 50, 0 );
-             heartShape.bezierCurveTo( 35, 0, 25, 25, 25, 25 );
-
-             const extrudeSettings = {
-                 steps: 1,
-                 depth: 4,  //profondeur de l'extrusion
-                 bevelEnabled: true,
-                 bevelThickness: 2, // epaisseur du biseau
-                 bevelSize: 2,      //taille du biseau
-                 bevelSegments: 3  //segment
-             };
-            const geometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
-            const material = new THREE.MeshPhongMaterial({ color: 0xe83e8c, shininess: 70 }); // Encore plus brillant
-
-            heart = new THREE.Mesh(geometry, material);
-             heart.scale.set(0.025, 0.025, 0.025); // Ajusté
-            scene.add(heart);
+        // Create Falling Hearts
+        function createFallingHearts() {
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Random initial position
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * -50}%`;
+                
+                // Random size
+                const size = 20 + Math.random() * 40;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                
+                heartsContainer.appendChild(heart);
+            }
         }
 
-         function animateHeart() {
-           if(heart){
-                heart.rotation.y += 0.025;
-                heart.rotation.x += 0.015;
-           }
-        }
-
-        // --- Création des cartes ---
-        function createCards() {
-            const cardContainer = document.getElementById('card-container');
-            cardsData.forEach((data, index) => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-                card.dataset.index = index; // Stocke l'index de la carte
-
-                const cardFront = document.createElement('div');
-                cardFront.classList.add('card-front');
-                cardFront.textContent = '?'; // Point d'interrogation
-                card.appendChild(cardFront);
-
-                const cardBack = document.createElement('div');
-                cardBack.classList.add('card-back');
-                cardBack.innerHTML = `<h3>${data.title}</h3><p>${data.text}</p>`;
-                card.appendChild(cardBack);
-
-                card.addEventListener('click', flipCard);
-                cardContainer.appendChild(card);
+        // Animate Falling Hearts
+        function animateHearts() {
+            const hearts = document.querySelectorAll('.heart');
+            hearts.forEach(heart => {
+                const currentTop = parseFloat(heart.style.top);
+                const newTop = currentTop + 1;
+                
+                heart.style.top = `${newTop}%`;
+                
+                // Reset heart if it goes below screen
+                if (newTop > 100) {
+                    heart.style.top = `${Math.random() * -50}%`;
+                    heart.style.left = `${Math.random() * 100}%`;
+                }
             });
         }
 
-        // --- Fonction pour retourner une carte ---
-       function flipCard() {
-            if (isFlipping) return; // Empêche les clics multiples
-            isFlipping = true;
-
-            this.classList.add('flipped');
-            flippedCards++;
-
-            // Mise à jour de la barre de progression
-            const progressBar = document.getElementById('progress-bar');
-            progressBar.style.width = `${(flippedCards / cardsData.length) * 100}%`;
-
-            // Vérifie si toutes les cartes sont retournées
-             if (flippedCards === cardsData.length) {
-                  setTimeout(() => {
-                      document.getElementById('final-message').style.display = 'block';
-                  }, 800); // Délai pour l'animation
-              }
-            setTimeout(() => { isFlipping = false; }, 800); // Réactive le clic après l'animation
-
+        // Create Cards
+        function createCards() {
+            cardData.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                
+                cardElement.innerHTML = `
+                    <div class="card-front">?</div>
+                    <div class="card-back">
+                        <h3>${card.title}</h3>
+                        <p>${card.text}</p>
+                    </div>
+                `;
+                
+                cardElement.addEventListener('click', () => {
+                    cardElement.classList.add('flipped');
+                    checkAllCardsFlipped();
+                });
+                
+                cardsContainer.appendChild(cardElement);
+            });
         }
 
-        // --- Gestion de l'orientation ---
+        // Check if all cards are flipped
+        function checkAllCardsFlipped() {
+            const cards = document.querySelectorAll('.card');
+            const flippedCards = document.querySelectorAll('.card.flipped');
+            
+            if (cards.length === flippedCards.length) {
+                setTimeout(() => {
+                    finalMessage.style.display = 'block';
+                }, 500);
+            }
+        }
+
+        // Device Orientation Handling
         function handleOrientation(event) {
-             const beta = event.beta;  // Inclinaison avant/arrière
-             const gamma = event.gamma; // Inclinaison gauche/droite
+            const hearts = document.querySelectorAll('.heart');
+            
+            // Use beta and gamma for tilt
+            const beta = event.beta;  // Front to back tilt
+            const gamma = event.gamma; // Side to side tilt
+            
+            hearts.forEach(heart => {
+                heart.style.transform = `
+                    rotate(${beta}deg) 
+                    skew(${gamma}deg)
+                `;
+            });
+        }
 
-              const rotationY = THREE.MathUtils.clamp(gamma, -20, 20) / 20 * Math.PI / 6;
-              const rotationX = THREE.MathUtils.clamp(beta, -20, 20) / 20 * Math.PI / 6;
-
-            if(heart){
-                 heart.rotation.y = rotationY;
-                 heart.rotation.x = rotationX;
+        // Initial Setup
+        function init() {
+            createFallingHearts();
+            createCards();
+            
+            // Falling hearts animation
+            setInterval(animateHearts, 50);
+            
+            // Device orientation
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', handleOrientation);
             }
         }
 
-        // --- Animation ---
-        function animate() {
-            requestAnimationFrame(animate);
-            animateHeart();
-            renderer.render(scene, camera);
-        }
-
-        // --- Chargement ---
-         document.addEventListener("DOMContentLoaded", function() {
-              const progressBar = document.getElementById('progress-bar');
-              const loadingScreen = document.getElementById('loading-screen');
-              const mainContent = document.getElementById('main-content');
-              let progress = 0;
-
-               const interval = setInterval(() => {
-                  progress += 2; // Progression plus rapide
-                  progressBar.style.width = progress + '%';
-
-                  if (progress >= 100) {
-                      clearInterval(interval);
-                      // Transition plus douce
-                      loadingScreen.style.transition = "opacity 0.8s ease-out";
-                      loadingScreen.style.opacity = 0;
-                      setTimeout(() => {
-                          loadingScreen.style.display = 'none';
-                          mainContent.style.display = 'block'; // Affiche le contenu
-                          init3D();        // Initialise Three.js
-                          createCards();    // Crée les cartes
-                          animate();        // Démarre l'animation
-
-                      }, 800); // Délai plus long pour la transition
-                  }
-              }, 20);
-          });
-
-        // --- Redimensionnement ---
-         function onWindowResize() {
-            if(camera && renderer){
-              camera.aspect = 80 / 80;
-              camera.updateProjectionMatrix();
-              renderer.setSize(80, 80);
-            }
-        }
-
-          // --- Gestionnaires d'événements ---
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', handleOrientation);
-        } else {
-             // Fallback pour les appareils sans gyroscope (souris)
-            document.addEventListener('mousemove', (event) => {
-              handleOrientation({
-                  beta: (-(event.clientY / window.innerHeight) + 0.5) * 60,  // Adapte la plage à -30/30
-                  gamma: ((event.clientX / window.innerWidth) - 0.5) * 60
-              });
-          });
-        }
-
-        window.addEventListener('resize', onWindowResize, false);
+        // Start the game
+        init();
     </script>
 </body>
 </html>
