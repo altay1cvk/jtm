@@ -29,11 +29,12 @@
             font-family: 'Parisienne', cursive;
             background: var(--background-gradient);
             color: var(--text-color);
+            /* Use min-height instead of height to allow for content that's taller than the viewport */
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            overflow: hidden;        /* Hide scrollbars */
             perspective: 1000px;
             touch-action: manipulation;
         }
@@ -66,31 +67,37 @@
             }
         }
 
+        /* Removed position: fixed from #game-container */
         #game-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            /*position: fixed;  Removed this */
+            /*top: 0;          Removed this */
+            /*left: 0;         Removed this */
+            /*width: 100%;     Removed this */
+            /*height: 100%;    Removed this */
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             z-index: 10;
             perspective: 1000px;
-            background: var(--background-gradient);
+            /* Removed background from here, applied to body */
             padding: 20px;
+             width: 100%; /* Add this to make sure it takes full width */
+            max-width: 600px; /*  Optional: Add a max-width for larger screens */
+            margin: 0 auto;    /* Center horizontally on larger screens (if max-width is used)*/
+
         }
 
         .card-container {
             width: 100%;
             max-width: 350px;
-            height: auto;
+            height: auto; /* Let the height be determined by content */
             max-height: 70vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
 
         .card {
             background: var(--card-bg);
@@ -100,11 +107,13 @@
             transition: transform 0.6s, box-shadow 0.3s;
             transform-style: preserve-3d;
             cursor: pointer;
-            position: absolute;
+            /* Removed position: absolute */
+            /*position: absolute;  Removed */
             width: 100%;
-            height: auto;
+            height: auto; /* Important: Let the height be determined by the content */
             min-height: 400px;
-            display: none;
+            display: none; /* Initially hidden */
+
         }
 
         .card.active {
@@ -192,12 +201,13 @@
             border-radius: 5px;
             cursor: pointer;
             z-index: 1001;
-            display: none;
+            display: none; /* Initially hidden */
             margin-top: 15px;
             font-size: 1em;
         }
 
-        #final-message {
+        /* Remove the #final-message div entirely */
+        /*#final-message {
             display: none;
             background: var(--card-bg);
             border-radius: 15px;
@@ -225,7 +235,8 @@
         #final-message p {
             font-size: 1.2em;
             line-height: 1.5;
-        }
+        }*/
+
 
         #audio-player {
             position: fixed;
@@ -284,13 +295,14 @@
                 font-size: 0.9em;
             }
 
-            #final-message h2 {
+            /* Remove media query for #final-message */
+           /* #final-message h2 {
                 font-size: 1.7em;
             }
 
             #final-message p {
                 font-size: 1em;
-            }
+            }*/
 
             #next-card {
                 font-size: 0.9em;
@@ -328,10 +340,7 @@
         <button id="next-card">Suivant</button>
     </div>
 
-    <div id="final-message">
-        <h2></h2>
-        <p></p>
-    </div>
+    <!-— Removed the final message div -->
 
     <div id="audio-player">
         <button id="play-pause">▶️</button>
@@ -342,7 +351,7 @@
         // The JavaScript remains the same as in the original file
         const heartsContainer = document.getElementById('hearts-container');
         const cardsContainer = document.getElementById('cards-container');
-        const finalMessage = document.getElementById('final-message');
+        const finalMessage = document.getElementById('final-message'); //This will now be null
         const audioPlayer = document.getElementById('audio-player');
         const playPauseBtn = document.getElementById('play-pause');
         const volumeControl = document.getElementById('volume-control');
@@ -461,7 +470,7 @@
             if (currentCardIndex < cardData.length) {
               const currentCard = document.getElementById(`card-${currentCardIndex}`);
 
-                if(currentCard) {  // Make sure the card exists
+                if(currentCard) {
                     currentCard.classList.add('active');
                     currentCardIndex++;
 
@@ -469,15 +478,10 @@
                         nextCardButton.style.display = 'block';
                     } else {
                         nextCardButton.style.display = 'none';
-                        setTimeout(() => {
-                          finalMessage.style.display = 'block';
-                          finalMessage.style.opacity = 1; // Fade in
-                        }, 500);
+                        // No final message to show
                     }
                 }
             }
-            // No need for an 'else' here, it's handled above
-
         }
 
         // Initialize the game
