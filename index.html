@@ -6,16 +6,20 @@
     <title>Le Jeu de l'Amour ❤️</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+     <!--  Intégration de Font Awesome pour les icônes (facultatif, mais sympa) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        :root { /* Variables CSS pour une maintenance facile */
-            --primary-color: #ff69b4; /* Rose vif */
-            --secondary-color: #ff1493; /* Rose foncé */
-            --background-gradient: linear-gradient(135deg, #ffb3ba, #ffdfba); /* Dégradé pêche */
-            --card-bg: white;
-            --text-color: #333; /* Gris foncé pour le texte */
-            --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            --heart-size: 30px; /* Taille de base des coeurs */
+        :root {
+            --primary-color: #e91e63; /* Rose plus moderne */
+            --secondary-color: #fff;
+            --bg-color: #fce4ec; /* Rose très pâle */
+            --card-bg: #fff;
+            --text-color: #4a4a4a; /* Gris foncé, meilleur contraste */
+            --title-color: #e91e63; /* Rose pour les titres */
+            --box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombre plus subtile */
+            --heart-size: 25px; /* Cœurs plus petits */
+            --border-radius: 20px;
         }
 
         * {
@@ -25,23 +29,24 @@
         }
 
         body {
-            font-family: 'Parisienne', cursive;  /* Police romantique */
-            background: var(--background-gradient);
+            font-family: 'Poppins', sans-serif; /* Police moderne, facile à lire */
+            background-color: var(--bg-color);
             color: var(--text-color);
-            min-height: 100vh; /* Important pour que le dégradé couvre tout */
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;  /* Empêche le scroll */
+            overflow-x: hidden; /* Empêche le scroll horizontal */
+
         }
-        /* Cœurs plus beaux */
+
         #hearts-container {
-             position: fixed;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Pour que les clics passent à travers */
+            pointer-events: none;
             z-index: 1;
         }
 
@@ -49,134 +54,182 @@
             position: absolute;
             width: var(--heart-size);
             height: var(--heart-size);
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff69b4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center/contain;
-           animation: fall linear infinite; /* Animation plus propre */
-            opacity: 0.6;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e91e63'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center/contain;
+            animation: fall linear infinite;
+            opacity: 0.7;
+            /* Effet de flou pour la profondeur (subtil) */
+            filter: blur(0.5px);
         }
 
-         /* Animation des coeurs, plus paramétrable */
         @keyframes fall {
+             /* Animation plus naturelle (variation de vitesse, rotation) */
             0% {
-                transform: translateY(-10vh) rotate(0deg); /* Commence au-dessus */
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;  /* Apparition progressive */
             }
+             20% {
+                opacity: 0.7;
+             }
+
             100% {
-                transform: translateY(110vh) rotate(360deg); /* Va en dessous */
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0; /* Disparition progressive */
             }
         }
+
 
         #game-container {
-            position: relative; /* Pour le z-index */
+            position: relative;
             z-index: 10;
-            width: 90%;
-            max-width: 400px; /* Limite la taille sur grands écrans */
-            perspective: 1000px; /* Effet 3D */
+            width: 95%; /* Légèrement plus étroit */
+            max-width: 450px; /* Légèrement plus large */
+            perspective: 1000px;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 15px;
-            margin: 15px 0;  /* Espace entre les cartes */
+            border-radius: var(--border-radius);
+            margin: 10px 0; /* Moins d'espace */
             text-align: center;
             box-shadow: var(--box-shadow);
-            transition: transform 0.6s; /* Animation de retournement */
-            transform-style: preserve-3d; /* Nécessaire pour le 3D */
+            transition: transform 0.6s, box-shadow 0.3s; /* Animation de survol */
+            transform-style: preserve-3d;
             cursor: pointer;
-            position: relative; /* Important pour les faces avant/arrière */
-            height: 150px; /* Hauteur fixe, pour l'homogénéité*/
-
+            position: relative;
+            height: 180px; /* Hauteur un peu plus grande */
+            overflow: hidden; /* Pour les coins arrondis */
         }
-         /* Animation de rotation des cartes */
+        .card:hover{
+             box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Ombre plus prononcée au survol */
+        }
+
         .card.flipped {
             transform: rotateY(180deg);
         }
 
         .card-front, .card-back {
-            position: absolute; /* Superposition des faces */
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex; /* Centrage du contenu */
+            display: flex;
             justify-content: center;
             align-items: center;
-            backface-visibility: hidden; /* Cache la face arrière */
-             border-radius: 15px; /*bords arrondis*/
+            backface-visibility: hidden;
+            border-radius: var(--border-radius); /* Coins arrondis */
+            padding: 20px; /* Plus d'espace à l'intérieur */
+
         }
 
         .card-front {
-            background: var(--background-gradient);
-            color: var(--card-bg);
-            font-size: 3em;
-            font-weight: bold; /* Texte plus visible */
+            /* Dégradé subtil pour la face avant */
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(233,30,99,0.2));
+            color: var(--title-color);
+            font-size: 2.5em; /* Légèrement plus petit */
+            font-weight: 700; /* Gras */
+            border: 3px solid var(--primary-color); /* Bordure */
+        }
+         .card-front i {
+            /* Icône Font Awesome (facultatif) */
+            margin-right: 8px;
+             font-size: 0.8em; /* Légèrement plus petit que le texte */
         }
 
         .card-back {
-            transform: rotateY(180deg); /* Dos de la carte, retourné */
+            transform: rotateY(180deg);
             background: var(--card-bg);
-            flex-direction: column; /* Contenu en colonne */
-            padding: 20px; /* Espace autour du texte */
+            flex-direction: column;
         }
 
         .card-back h3 {
-            color: var(--primary-color);
+            color: var(--title-color);
             margin-bottom: 10px;
-            font-size: 1.8em; /* Titres plus grands */
+            font-size: 1.6em;
+             font-family: 'Great Vibes', cursive; /* Police cursive pour les titres */
+             font-weight: 400; /* Moins gras */
         }
+
         .card-back p {
-            font-size: 1.2em; /* Texte plus grand */
-            line-height: 1.4; /* Meilleure lisibilité */
-        }
-
-        #final-message {
-           display: none; /* Caché au début */
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 30px; /* Plus d'espace */
-            text-align: center;
-            box-shadow: var(--box-shadow);
-            position: fixed; /* Reste fixe même si on scroll (peu probable ici) */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100; /* Au-dessus de tout */
-            max-width: 90%;
-        }
-
-        #final-message h2 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-size: 2.5em; /* Titre plus grand */
-        }
-
-         #final-message p {
-            font-size: 1.3em;
+            font-size: 1.1em;
             line-height: 1.5;
         }
 
-        /* Style pour mobile */
+
+        #final-message {
+            display: none;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            max-width: 90%;
+             /* Animation d'apparition (subtile) */
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            transform: translate(-50%, -50%) scale(0.8); /* Légèrement plus petit au début */
+
+        }
+
+        #final-message.show {
+             /* Classe ajoutée par JS pour afficher le message */
+            opacity: 1;
+             transform: translate(-50%, -50%) scale(1);
+        }
+
+        #final-message h2 {
+            color: var(--title-color);
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-family: 'Great Vibes', cursive;
+            font-weight: 400;
+        }
+
+        #final-message p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        /* Media Queries pour la responsivité */
+
         @media (max-width: 768px) {
-            .card {
-                height: auto; /* La hauteur s'adapte au contenu */
-                 min-height: 120px; /* Hauteur minimale */
+             .card {
+                height: auto; /* La hauteur s'adapte */
+                min-height: 120px;
             }
-            .card-front{
+            .card-front {
                 font-size: 2em;
             }
-            .card-back h3{
-                font-size: 1.3em;
+             .card-front i {
+                font-size: 0.7em; /* Plus petit sur mobile */
             }
-            .card-back p{
+            .card-back h3 {
+                font-size: 1.4em;
+            }
+            .card-back p {
                 font-size: 1em;
             }
-            #final-message h2{
+             #final-message h2 {
                 font-size: 1.8em;
             }
-            #final-message p{
+             #final-message p {
                 font-size: 1.1em;
             }
         }
-
-
+        /* Pour les très petits écrans, on ajuste encore */
+        @media (max-width: 480px) {
+             #game-container {
+                width: 100%; /* Prend tout l'espace */
+            }
+             .card {
+                margin: 5px 0; /* Encore moins d'espace */
+            }
+        }
     </style>
 </head>
 <body>
@@ -191,7 +244,7 @@
         <p>Tu as découvert tous les secrets de mon cœur. Tu es ma joie, ma lumière, mon inspiration.</p>
     </div>
 
-    <script>
+  <script>
     const heartsContainer = document.getElementById('hearts-container');
     const cardsContainer = document.getElementById('cards-container');
     const finalMessage = document.getElementById('final-message');
@@ -203,63 +256,62 @@
         { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." }
     ];
 
-
-    function createFallingHearts() {
-        for (let i = 0; i < 50; i++) {
+     function createFallingHearts() {
+        for (let i = 0; i < 70; i++) { // Plus de coeurs
             const heart = document.createElement('div');
             heart.classList.add('heart');
             heartsContainer.appendChild(heart);
-
-            // Position, taille et animation aléatoires
             resetHeart(heart);
         }
     }
 
-    // Réinitialise un cœur pour l'animation
     function resetHeart(heart) {
-        const size = 10 + Math.random() * 30; // Taille variable
-        const speed = 2 + Math.random() * 3;    // Vitesse variable
-        const startX = Math.random() * 100;   // Position horizontale
+        const size = 10 + Math.random() * 20; // Cœurs plus petits
+        const speed = 4 + Math.random() * 5;     // Plus lents
+        const startX = Math.random() * 100;
+        const delay = Math.random() * 5;     // Délai de départ aléatoire
 
         heart.style.width = `${size}px`;
         heart.style.height = `${size}px`;
         heart.style.left = `${startX}vw`;
-        heart.style.top = '-10vh';  // Commence au-dessus
+        heart.style.top = '-10vh';
         heart.style.animationDuration = `${speed}s`;
+        heart.style.animationDelay = `${delay}s`; // Délai !
     }
 
 
-    // Animation via requestAnimationFrame, plus performant
-     function animateHearts() {
+    function animateHearts() {
         const hearts = document.querySelectorAll('.heart');
         hearts.forEach(heart => {
-            // Pas besoin de récupérer la position, l'animation CSS s'en charge
             const top = parseFloat(heart.style.top);
-            if (top>110){
+            if (top > 110) {
                 resetHeart(heart);
             }
-
         });
-        requestAnimationFrame(animateHearts); // Continue l'animation
+        requestAnimationFrame(animateHearts);
     }
 
-    function createCards() {
-        cardData.forEach((card) => {
+     function createCards() {
+        cardData.forEach((card, index) => { // Ajout de l'index
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
+             // Ajout d'une icône Font Awesome (facultatif) : <i class="fas fa-heart"></i>
             cardElement.innerHTML = `
-                <div class="card-front">?</div>
+                <div class="card-front"><i class="fas fa-question"></i>?</div>
                 <div class="card-back">
                     <h3>${card.title}</h3>
                     <p>${card.text}</p>
                 </div>
             `;
             cardElement.addEventListener('click', () => {
-                if (!cardElement.classList.contains('flipped')){ //empeche de recliquer
+                if (!cardElement.classList.contains('flipped')) {
                     cardElement.classList.add('flipped');
+                    // Jouer un son (facultatif) :  flipSound.play();
                     checkAllCardsFlipped();
                 }
             });
+             // Délai progressif pour l'apparition des cartes
+            cardElement.style.animationDelay = `${index * 0.15}s`; // 0.15s de délai entre chaque carte
             cardsContainer.appendChild(cardElement);
         });
     }
@@ -267,39 +319,22 @@
     function checkAllCardsFlipped() {
         const flippedCards = document.querySelectorAll('.card.flipped');
         if (flippedCards.length === cardData.length) {
-             // Délai pour voir la dernière carte
             setTimeout(() => {
-                finalMessage.style.display = 'block';
-                 // Animation d'apparition (optionnel, nécessite une librairie comme GSAP)
-                // gsap.from(finalMessage, { opacity: 0, y: 50, duration: 0.5 });
+                finalMessage.classList.add('show'); // Utilisation de la classe .show
             }, 600);
         }
     }
-
-
-     function handleOrientation(event) {
-      //  const hearts = document.querySelectorAll('.heart');
-      //  const beta = event.beta;
-       // const gamma = event.gamma;
-        //inutile avec l'approche de l'animation CSS
-    }
+    //  (Facultatif) :  Préchargement du son
+    // const flipSound = new Audio('chemin/vers/votre/son.mp3');
+    // flipSound.preload = 'auto';
 
 
     function init() {
         createFallingHearts();
         createCards();
-        animateHearts(); // Utilisation de requestAnimationFrame
-
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', handleOrientation);
-        } else {
-            // Message si l'orientation n'est pas supportée (optionnel)
-            console.log("Device orientation not supported");
-        }
+        animateHearts();
     }
-
     init();
-
     </script>
 </body>
 </html>
