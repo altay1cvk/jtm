@@ -46,41 +46,24 @@
             100% { transform: translateY(110vh) rotate(360deg); }
         }
         #game-container {
-            position: relative;
             width: 100%;
             max-width: 350px;
-            height: 500px;
             margin: 0 auto;
             perspective: 1000px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        #cards-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
         }
         .card {
-            position: absolute;
             background: var(--card-bg);
             border-radius: 15px;
             box-shadow: var(--box-shadow);
-            width: 100%;
-            height: 400px;
+            min-height: 400px;
+            display: none;
             transform-style: preserve-3d;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out, transform 0.6s;
-            display: none;
         }
         .card.active {
-            display: block;
-            opacity: 1;
+            display: flex;
+            flex-direction: column;
         }
         .card-front, .card-back {
             position: absolute;
@@ -127,23 +110,48 @@
             white-space: pre-wrap;
         }
         #next-card {
-            position: absolute;
-            bottom: -60px;
             background-color: var(--primary-color);
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            z-index: 10;
+            margin-top: 15px;
+            display: none;
+        }
+        #audio-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 30px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        #audio-player button {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            cursor: pointer;
         }
         @media (max-width: 480px) {
             #game-container {
                 max-width: 95%;
-                height: 400px;
+                padding: 10px;
             }
             .card {
-                height: 350px;
+                min-height: 300px;
             }
             .card-front {
                 font-size: 1.5em;
@@ -163,10 +171,35 @@
         <div id="cards-container"></div>
         <button id="next-card">Suivant</button>
     </div>
+    <div id="audio-player">
+        <button id="play-pause">▶️</button>
+        <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.5">
+    </div>
     <script>
         const heartsContainer = document.getElementById('hearts-container');
         const cardsContainer = document.getElementById('cards-container');
+        const audioPlayer = document.getElementById('audio-player');
+        const playPauseBtn = document.getElementById('play-pause');
+        const volumeControl = document.getElementById('volume-control');
         const nextCardButton = document.getElementById('next-card');
+
+        const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+        let isPlaying = false;
+
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                romanticMusic.pause();
+                playPauseBtn.textContent = '▶️';
+            } else {
+                romanticMusic.play();
+                playPauseBtn.textContent = '⏸️';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        volumeControl.addEventListener('input', () => {
+            romanticMusic.volume = volumeControl.value;
+        });
 
         const cardData = [
             { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
@@ -263,9 +296,7 @@
                     currentCard.classList.add('active');
                     currentCardIndex++;
 
-                    if (currentCardIndex >= cardData.length) {
-                        nextCardButton.style.display = 'none';
-                    }
+                    nextCardButton.style.display = currentCardIndex < cardData.length ? 'block' : 'none';
                 }
             }
         }
@@ -273,7 +304,10 @@
         function init() {
             createFallingHearts();
             createCards();
-            nextCardButton.style.display = 'block';
+            showNextCard();
+            setTimeout(() => {
+                audioPlayer.style.opacity = 1;
+            }, 2000);
         }
 
         nextCardButton.addEventListener('click', showNextCard);
