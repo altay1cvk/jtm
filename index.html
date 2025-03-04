@@ -8,14 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --primary-color: #ff69b4; 
-            --secondary-color: #ff1493; 
-            --background-gradient: linear-gradient(135deg, #ffb3ba, #ffdfba); 
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #ff1493;
+            --background-gradient: linear-gradient(135deg, #ffb3ba, #ffdfba);
             --card-bg: white;
-            --text-color: #333; 
+            --text-color: #333;
             --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            --heart-size: 30px; 
+            --heart-size: 30px;
         }
 
         * {
@@ -25,14 +25,14 @@
         }
 
         body {
-            font-family: 'Parisienne', cursive;  
+            font-family: 'Parisienne', cursive;
             background: var(--background-gradient);
             color: var(--text-color);
-            min-height: 100vh; 
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;  
+            overflow: hidden;
             perspective: 1000px;
         }
 
@@ -42,7 +42,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; 
+            pointer-events: none;
             z-index: 1;
         }
 
@@ -51,16 +51,16 @@
             width: var(--heart-size);
             height: var(--heart-size);
             background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff69b4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center/contain;
-            animation: fall linear infinite; 
+            animation: fall linear infinite;
             opacity: 0.6;
         }
 
         @keyframes fall {
             0% {
-                transform: translateY(-10vh) rotate(0deg); 
+                transform: translateY(-10vh) rotate(0deg);
             }
             100% {
-                transform: translateY(110vh) rotate(360deg); 
+                transform: translateY(110vh) rotate(360deg);
             }
         }
 
@@ -70,77 +70,100 @@
         }
 
         #game-container {
-            position: relative; 
-            z-index: 10;
-            width: 90%;
-            max-width: 400px; 
-            perspective: 1000px; 
+          position: fixed; /* Important pour le plein écran */
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 10;
+          perspective: 1000px;
+          background: var(--background-gradient); /* Garder l'arrière-plan */
         }
 
         .card {
             background: var(--card-bg);
             border-radius: 15px;
-            margin: 15px 0;  
             text-align: center;
             box-shadow: var(--box-shadow);
-            transition: transform 0.6s, box-shadow 0.3s; 
-            transform-style: preserve-3d; 
+            transition: transform 0.6s, box-shadow 0.3s;
+            transform-style: preserve-3d;
             cursor: pointer;
-            position: relative; 
-            height: 150px; 
+            position: absolute; /* Position absolue pour le plein écran */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(0deg); /* Initialement non retournée */
+            width: 90%;
+            max-width: 400px;
+            height: auto; /* Hauteur automatique basée sur le contenu */
+            max-height: 90vh;  /* Limite la hauteur à 90% de la hauteur de la vue */
+            display: none; /* Cacher par défaut */
+        }
+         .card.active {
+            display: flex; /* Afficher la carte active */
+            flex-direction: column; /* Assurer l'empilement vertical */
         }
 
         .card:hover {
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            animation: pulse 1s infinite;
+             /* animation: pulse 1s infinite;  enlever l'animation pulse  pour la simplification */
         }
 
         .card.flipped {
-            transform: rotateY(180deg);
+            transform: translate(-50%, -50%) rotateY(180deg);
         }
 
         .card-front, .card-back {
-            position: absolute; 
+           position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex; 
+            display: flex;
             justify-content: center;
             align-items: center;
-            backface-visibility: hidden; 
-            border-radius: 15px; 
+            backface-visibility: hidden;
+            border-radius: 15px;
+
         }
 
         .card-front {
             background: var(--background-gradient);
             color: var(--card-bg);
             font-size: 3em;
-            font-weight: bold; 
+            font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .card-back {
-            transform: rotateY(180deg); 
+            transform: rotateY(180deg);
             background: var(--card-bg);
-            flex-direction: column; 
-            padding: 20px; 
+            flex-direction: column;
+            padding: 20px;
             text-align: center;
+              overflow-y: auto; /* Permet le défilement si le contenu est trop grand */
         }
 
         .card-back h3 {
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 1.8em; 
+            font-size: 1.8em;
             font-family: 'Dancing Script', cursive;
         }
 
         .card-back p {
-            font-size: 1.2em; 
-            line-height: 1.4; 
+            font-size: 1.2em;
+            line-height: 1.4;
+             max-height: 70vh; /* Limiter la hauteur du texte, ajuster selon besoin */
+            overflow-y: auto;  /* Barres de défilement si nécessaire */
+            padding-right: 10px; /* Espace pour la barre de défilement */
+
         }
 
         .card-back.poem {
+            /* styles pour le poème restent les mêmes */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -149,38 +172,38 @@
             padding: 15px;
             line-height: 1.5;
             background: linear-gradient(to bottom right, #fff0f5, #ffefd5);
-        }
 
-        .card-back.poem h3 {
-            margin-bottom: 10px;
-            font-size: 2em;
-            color: #ff1493;
-            font-family: 'Dancing Script', cursive;
         }
-
-        .card-back.poem p {
+          .card-back.poem h3{
+              margin-bottom: 10px;
+                font-size: 2em;
+                color: #ff1493;
+                font-family: 'Dancing Script', cursive;
+          }
+          .card-back.poem p{
             font-size: 1.1em;
             white-space: pre-wrap;
             font-family: 'Dancing Script', cursive;
             color: #8b008b;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-            max-height: 300px;
-            overflow-y: auto;
+            max-height: 70vh; /* Important pour le scroll */
+            overflow-y: auto;  /* Important pour le scroll */
             padding: 0 10px;
-        }
+          }
+
 
         #final-message {
-            display: none; 
+            display: none;
             background: var(--card-bg);
             border-radius: 15px;
-            padding: 30px; 
+            padding: 30px;
             text-align: center;
             box-shadow: var(--box-shadow);
-            position: fixed; 
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 100; 
+            z-index: 100;
             max-width: 90%;
             opacity: 0;
             transition: opacity 1s, transform 1s;
@@ -195,7 +218,7 @@
         #final-message h2 {
             color: var(--primary-color);
             margin-bottom: 15px;
-            font-size: 2.5em; 
+            font-size: 2.5em;
             font-family: 'Dancing Script', cursive;
         }
 
@@ -242,10 +265,31 @@
             transform: scale(1.1);
         }
 
+        #next-card {
+          position: fixed;
+          bottom: 20px;  /* Ajustez selon votre préférence */
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: var(--primary-color);
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          z-index: 1001; /* Au-dessus des cartes */
+          display: none; /* Caché initialement */
+      }
+        #next-card.show {
+          display: block;
+      }
+
+
+
         @media (max-width: 768px) {
-            .card {
-                height: auto; 
-                min-height: 120px; 
+            /* styles pour mobile restent les mêmes, ajustez si besoin */
+             .card {
+                height: auto;
+                min-height: 120px;
             }
             .card-front{
                 font-size: 2em;
@@ -274,7 +318,9 @@
 
     <div id="game-container">
         <div id="cards-container"></div>
+         <button id="next-card">Suivant</button>
     </div>
+
 
     <div id="final-message">
         <h2>Mon Amour Éternel</h2>
@@ -287,130 +333,169 @@
     </div>
 
     <script>
-    const heartsContainer = document.getElementById('hearts-container');
-    const cardsContainer = document.getElementById('cards-container');
-    const finalMessage = document.getElementById('final-message');
-    const audioPlayer = document.getElementById('audio-player');
-    const playPauseBtn = document.getElementById('play-pause');
-    const volumeControl = document.getElementById('volume-control');
+      const heartsContainer = document.getElementById('hearts-container');
+const cardsContainer = document.getElementById('cards-container');
+const finalMessage = document.getElementById('final-message');
+const audioPlayer = document.getElementById('audio-player');
+const playPauseBtn = document.getElementById('play-pause');
+const volumeControl = document.getElementById('volume-control');
+const nextCardButton = document.getElementById('next-card');
 
-    // Musique romantique (base64 encodé - ici un exemple minimal)
-    const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
-    let isPlaying = false;
 
-    playPauseBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            romanticMusic.pause();
-            playPauseBtn.textContent = '▶️';
-        } else {
-            romanticMusic.play();
-            playPauseBtn.textContent = '⏸️';
-        }
-        isPlaying = !isPlaying;
-    });
+const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+let isPlaying = false;
 
-    volumeControl.addEventListener('input', () => {
-        romanticMusic.volume = volumeControl.value;
-    });
+playPauseBtn.addEventListener('click', () => {
+    if (isPlaying) {
+        romanticMusic.pause();
+        playPauseBtn.textContent = '▶️';
+    } else {
+        romanticMusic.play();
+        playPauseBtn.textContent = '⏸️';
+    }
+    isPlaying = !isPlaying;
+});
 
-    const cardData = [
-        { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
-        { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
-        { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
-        { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." },
-        { 
-            title: "Gözlerindeki Aşk", 
-            text: "Senin gülüşun, bir bahar melodisi\n" +
-                  "Gözlerin, Kazak steplerinin genişliği\n" +
-                  "İnce çizgilerle süslü, sonsuz bir hayal\n" +
-                  "Kalbimin her atışında, senin adın canlanır\n\n" +
-                  
-                  "Dudaklarındaki tebessüm, güneşten daha parlak\n" +
-                  "Konuşmalarımız, iki ruhun sessiz dansı\n" +
-                  "Senin gözlerin - uzak ufuklar kadar derin\n" +
-                  "İçinde kaybolmak istediğim sonsuz bir deniz\n\n" +
-                  
-                  "Senin kahkahan, çiçeklerin açılışı gibi\n" +
-                  "Hafif, neşeli, hayatın ta kendisi\n" +
-                  "Her kelimenle, her bakışınla\n" +
-                  "Kalbimi büyüleyen, sensin - tek sen", 
-            className: "poem" 
-        }
-    ];
+volumeControl.addEventListener('input', () => {
+    romanticMusic.volume = volumeControl.value;
+});
 
-    function createFallingHearts() {
-        for (let i = 0; i < 100; i++) {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heartsContainer.appendChild(heart);
+const cardData = [
+  { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
+  { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
+  { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
+  { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." },
+  {
+      title: "Gözlerindeki Aşk",
+      text: "Senin gülüşun, bir bahar melodisi\n" +
+            "Gözlerin, Kazak steplerinin genişliği\n" +
+            "İnce çizgilerle süslü, sonsuz bir hayal\n" +
+            "Kalbimin her atışında, senin adın canlanır\n\n" +
+
+            "Dudaklarındaki tebessüm, güneşten daha parlak\n" +
+            "Konuşmalarımız, iki ruhun sessiz dansı\n" +
+            "Senin gözlerin - uzak ufuklar kadar derin\n" +
+            "İçinde kaybolmak istediğim sonsuz bir deniz\n\n" +
+
+            "Senin kahkahan, çiçeklerin açılışı gibi\n" +
+            "Hafif, neşeli, hayatın ta kendisi\n" +
+            "Her kelimenle, her bakışınla\n" +
+            "Kalbimi büyüleyen, sensin - tek sen",
+      className: "poem"
+  }
+];
+let currentCardIndex = 0;
+
+
+function createFallingHearts() {
+    for (let i = 0; i < 100; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heartsContainer.appendChild(heart);
+        resetHeart(heart);
+    }
+}
+
+function resetHeart(heart) {
+    const size = 10 + Math.random() * 50;
+    const speed = 2 + Math.random() * 5;
+    const startX = Math.random() * 100;
+    const opacity = 0.3 + Math.random() * 0.7;
+
+    heart.style.width = `${size}px`;
+    heart.style.height = `${size}px`;
+    heart.style.left = `${startX}vw`;
+    heart.style.top = '-10vh';
+    heart.style.animationDuration = `${speed}s`;
+    heart.style.opacity = opacity;
+}
+
+function animateHearts() {
+    const hearts = document.querySelectorAll('.heart');
+    hearts.forEach(heart => {
+        const top = parseFloat(heart.style.top);
+        if (top > 110){
             resetHeart(heart);
         }
+    });
+    requestAnimationFrame(animateHearts);
+}
+
+function createCard(index) {
+    if (index >= cardData.length) {
+        // Toutes les cartes ont été affichées, montrer le message final
+        showFinalMessage();
+        return;
     }
 
-    function resetHeart(heart) {
-        const size = 10 + Math.random() * 50;
-        const speed = 2 + Math.random() * 5;
-        const startX = Math.random() * 100;
-        const opacity = 0.3 + Math.random() * 0.7;
+    const card = cardData[index];
+    const cardElement = document.createElement('div');
+    cardElement.classList.add('card');
+     if (index === 0) {
+        cardElement.classList.add('active'); // Affiche la première carte
+    }
+    const backClassName = card.className ? `card-back ${card.className}` : 'card-back';
+    cardElement.innerHTML = `
+        <div class="card-front">?</div>
+        <div class="${backClassName}">
+            <h3>${card.title}</h3>
+            <p>${card.text}</p>
+        </div>
+    `;
 
-        heart.style.width = `${size}px`;
-        heart.style.height = `${size}px`;
-        heart.style.left = `${startX}vw`;
-        heart.style.top = '-10vh';
-        heart.style.animationDuration = `${speed}s`;
-        heart.style.opacity = opacity;
+  cardElement.addEventListener('click', () => {
+    if (!cardElement.classList.contains('flipped')) {
+        cardElement.classList.add('flipped');
+          // Après avoir retourné la carte, on peut faire une pause si besoin
+        setTimeout(()=>{
+          nextCardButton.classList.add('show'); // Montre le bouton après le délai
+        }, 500);
+
+    }
+});
+    cardsContainer.appendChild(cardElement);
+}
+
+function showNextCard(){
+    const currentCard = document.querySelector('.card.active');
+    if(currentCard){
+        currentCard.classList.remove('active');
+        currentCard.style.display ="none";
     }
 
-    function animateHearts() {
-        const hearts = document.querySelectorAll('.heart');
-        hearts.forEach(heart => {
-            const top = parseFloat(heart.style.top);
-            if (top > 110){
-                resetHeart(heart);
-            }
-        });
-        requestAnimationFrame(animateHearts);
-    }
-
-    function createCards() {
-        cardData.forEach((card) => {
-            const cardElement = document.createElement('div');
-            cardElement.classList.add('card');
-            const backClassName = card.className ? `card-back ${card.className}` : 'card-back';
-            cardElement.innerHTML = `
-                <div class="card-front">?</div>
-                <div class="${backClassName}">
-                    <h3>${card.title}</h3>
-                    <p>${card.text}</p>
-                </div>
-            `;
-            cardElement.addEventListener('click', () => {
-                if (!cardElement.classList.contains('flipped')){
-                    cardElement.classList.add('flipped');
-                    checkAllCardsFlipped();
-                }
-            });
-            cardsContainer.appendChild(cardElement);
-        });
-    }
-
-    function checkAllCardsFlipped() {
-        const flippedCards = document.querySelectorAll('.card.flipped');
-        if (flippedCards.length === cardData.length) {
-            setTimeout(() => {
-                finalMessage.classList.add('show');
-                audioPlayer.classList.add('show');
-                 romanticMusic.play();
-                 isPlaying = true;
-                 playPauseBtn.textContent= '⏸️';
-
-            }, 600); 
+    currentCardIndex++;
+    if (currentCardIndex < cardData.length) {
+        createCard(currentCardIndex);
+         const nextCard = document.querySelectorAll('.card')[currentCardIndex];
+          if (nextCard) {
+            nextCard.classList.add('active'); // Affiche la carte suivante
         }
-    }
 
-    createFallingHearts();
-    animateHearts();
-    createCards();
+    } else {
+        showFinalMessage();
+    }
+     nextCardButton.classList.remove('show');
+}
+
+nextCardButton.addEventListener('click', showNextCard);
+
+function showFinalMessage() {
+
+      setTimeout(() => {
+        finalMessage.classList.add('show');
+        audioPlayer.classList.add('show');
+        romanticMusic.play();
+        isPlaying = true;
+        playPauseBtn.textContent = '⏸️';
+    }, 600); // Pas de changement ici
+
+}
+
+createFallingHearts();
+animateHearts();
+createCard(currentCardIndex); // Crée la première carte
+
+
     </script>
 </body>
 </html>
