@@ -78,6 +78,7 @@
           display: flex;
           justify-content: center;
           align-items: center;
+          flex-direction: column; /* Ajout pour aligner verticalement */
           z-index: 10;
           perspective: 1000px;
           background: var(--background-gradient); /* Garder l'arrière-plan */
@@ -91,15 +92,14 @@
             transition: transform 0.6s, box-shadow 0.3s;
             transform-style: preserve-3d;
             cursor: pointer;
-            position: absolute; /* Position absolue pour le plein écran */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotateY(0deg); /* Initialement non retournée */
+            position: relative;  /*Changement important*/
+            /* Retrait de top, left, transform pour le centrage */
             width: 90%;
             max-width: 400px;
             height: auto; /* Hauteur automatique basée sur le contenu */
-            max-height: 90vh;  /* Limite la hauteur à 90% de la hauteur de la vue */
+            max-height: 70vh;  /* Limite la hauteur à 70% de la hauteur de la vue */
             display: none; /* Cacher par défaut */
+            margin-bottom: 20px; /* Espace entre la carte et le bouton */
         }
          .card.active {
             display: flex; /* Afficher la carte active */
@@ -112,7 +112,7 @@
         }
 
         .card.flipped {
-            transform: translate(-50%, -50%) rotateY(180deg);
+             transform:  rotateY(180deg); /*Retrait du translate */
         }
 
         .card-front, .card-back {
@@ -266,10 +266,7 @@
         }
 
         #next-card {
-          position: fixed;
-          bottom: 20px;  /* Ajustez selon votre préférence */
-          left: 50%;
-          transform: translateX(-50%);
+          /* Retrait de position: fixed, bottom, left, transform */
           background-color: var(--primary-color);
           color: white;
           padding: 10px 20px;
@@ -278,6 +275,8 @@
           cursor: pointer;
           z-index: 1001; /* Au-dessus des cartes */
           display: none; /* Caché initialement */
+          margin-top: 20px; /* Espace au-dessus du bouton (si besoin) */
+
       }
         #next-card.show {
           display: block;
@@ -334,166 +333,166 @@
 
     <script>
       const heartsContainer = document.getElementById('hearts-container');
-const cardsContainer = document.getElementById('cards-container');
-const finalMessage = document.getElementById('final-message');
-const audioPlayer = document.getElementById('audio-player');
-const playPauseBtn = document.getElementById('play-pause');
-const volumeControl = document.getElementById('volume-control');
-const nextCardButton = document.getElementById('next-card');
+      const cardsContainer = document.getElementById('cards-container');
+      const finalMessage = document.getElementById('final-message');
+      const audioPlayer = document.getElementById('audio-player');
+      const playPauseBtn = document.getElementById('play-pause');
+      const volumeControl = document.getElementById('volume-control');
+      const nextCardButton = document.getElementById('next-card');
 
 
-const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
-let isPlaying = false;
+      const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+      let isPlaying = false;
 
-playPauseBtn.addEventListener('click', () => {
-    if (isPlaying) {
-        romanticMusic.pause();
-        playPauseBtn.textContent = '▶️';
-    } else {
-        romanticMusic.play();
-        playPauseBtn.textContent = '⏸️';
-    }
-    isPlaying = !isPlaying;
-});
+      playPauseBtn.addEventListener('click', () => {
+          if (isPlaying) {
+              romanticMusic.pause();
+              playPauseBtn.textContent = '▶️';
+          } else {
+              romanticMusic.play();
+              playPauseBtn.textContent = '⏸️';
+          }
+          isPlaying = !isPlaying;
+      });
 
-volumeControl.addEventListener('input', () => {
-    romanticMusic.volume = volumeControl.value;
-});
+      volumeControl.addEventListener('input', () => {
+          romanticMusic.volume = volumeControl.value;
+      });
 
-const cardData = [
-  { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
-  { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
-  { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
-  { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." },
-  {
-      title: "Gözlerindeki Aşk",
-      text: "Senin gülüşun, bir bahar melodisi\n" +
-            "Gözlerin, Kazak steplerinin genişliği\n" +
-            "İnce çizgilerle süslü, sonsuz bir hayal\n" +
-            "Kalbimin her atışında, senin adın canlanır\n\n" +
+      const cardData = [
+        { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
+        { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
+        { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
+        { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." },
+        {
+            title: "Gözlerindeki Aşk",
+            text: "Senin gülüşun, bir bahar melodisi\n" +
+                  "Gözlerin, Kazak steplerinin genişliği\n" +
+                  "İnce çizgilerle süslü, sonsuz bir hayal\n" +
+                  "Kalbimin her atışında, senin adın canlanır\n\n" +
 
-            "Dudaklarındaki tebessüm, güneşten daha parlak\n" +
-            "Konuşmalarımız, iki ruhun sessiz dansı\n" +
-            "Senin gözlerin - uzak ufuklar kadar derin\n" +
-            "İçinde kaybolmak istediğim sonsuz bir deniz\n\n" +
+                  "Dudaklarındaki tebessüm, güneşten daha parlak\n" +
+                  "Konuşmalarımız, iki ruhun sessiz dansı\n" +
+                  "Senin gözlerin - uzak ufuklar kadar derin\n" +
+                  "İçinde kaybolmak istediğim sonsuz bir deniz\n\n" +
 
-            "Senin kahkahan, çiçeklerin açılışı gibi\n" +
-            "Hafif, neşeli, hayatın ta kendisi\n" +
-            "Her kelimenle, her bakışınla\n" +
-            "Kalbimi büyüleyen, sensin - tek sen",
-      className: "poem"
-  }
-];
-let currentCardIndex = 0;
-
-
-function createFallingHearts() {
-    for (let i = 0; i < 100; i++) {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heartsContainer.appendChild(heart);
-        resetHeart(heart);
-    }
-}
-
-function resetHeart(heart) {
-    const size = 10 + Math.random() * 50;
-    const speed = 2 + Math.random() * 5;
-    const startX = Math.random() * 100;
-    const opacity = 0.3 + Math.random() * 0.7;
-
-    heart.style.width = `${size}px`;
-    heart.style.height = `${size}px`;
-    heart.style.left = `${startX}vw`;
-    heart.style.top = '-10vh';
-    heart.style.animationDuration = `${speed}s`;
-    heart.style.opacity = opacity;
-}
-
-function animateHearts() {
-    const hearts = document.querySelectorAll('.heart');
-    hearts.forEach(heart => {
-        const top = parseFloat(heart.style.top);
-        if (top > 110){
-            resetHeart(heart);
+                  "Senin kahkahan, çiçeklerin açılışı gibi\n" +
+                  "Hafif, neşeli, hayatın ta kendisi\n" +
+                  "Her kelimenle, her bakışınla\n" +
+                  "Kalbimi büyüleyen, sensin - tek sen",
+            className: "poem"
         }
-    });
-    requestAnimationFrame(animateHearts);
-}
+      ];
+      let currentCardIndex = 0;
 
-function createCard(index) {
-    if (index >= cardData.length) {
-        // Toutes les cartes ont été affichées, montrer le message final
-        showFinalMessage();
-        return;
-    }
 
-    const card = cardData[index];
-    const cardElement = document.createElement('div');
-    cardElement.classList.add('card');
-     if (index === 0) {
-        cardElement.classList.add('active'); // Affiche la première carte
-    }
-    const backClassName = card.className ? `card-back ${card.className}` : 'card-back';
-    cardElement.innerHTML = `
-        <div class="card-front">?</div>
-        <div class="${backClassName}">
-            <h3>${card.title}</h3>
-            <p>${card.text}</p>
-        </div>
-    `;
+      function createFallingHearts() {
+          for (let i = 0; i < 100; i++) {
+              const heart = document.createElement('div');
+              heart.classList.add('heart');
+              heartsContainer.appendChild(heart);
+              resetHeart(heart);
+          }
+      }
 
-  cardElement.addEventListener('click', () => {
-    if (!cardElement.classList.contains('flipped')) {
-        cardElement.classList.add('flipped');
-          // Après avoir retourné la carte, on peut faire une pause si besoin
-        setTimeout(()=>{
-          nextCardButton.classList.add('show'); // Montre le bouton après le délai
-        }, 500);
+      function resetHeart(heart) {
+          const size = 10 + Math.random() * 50;
+          const speed = 2 + Math.random() * 5;
+          const startX = Math.random() * 100;
+          const opacity = 0.3 + Math.random() * 0.7;
 
-    }
-});
-    cardsContainer.appendChild(cardElement);
-}
+          heart.style.width = `${size}px`;
+          heart.style.height = `${size}px`;
+          heart.style.left = `${startX}vw`;
+          heart.style.top = '-10vh';
+          heart.style.animationDuration = `${speed}s`;
+          heart.style.opacity = opacity;
+      }
 
-function showNextCard(){
-    const currentCard = document.querySelector('.card.active');
-    if(currentCard){
-        currentCard.classList.remove('active');
-        currentCard.style.display ="none";
-    }
+      function animateHearts() {
+          const hearts = document.querySelectorAll('.heart');
+          hearts.forEach(heart => {
+              const top = parseFloat(heart.style.top);
+              if (top > 110){
+                  resetHeart(heart);
+              }
+          });
+          requestAnimationFrame(animateHearts);
+      }
 
-    currentCardIndex++;
-    if (currentCardIndex < cardData.length) {
-        createCard(currentCardIndex);
-         const nextCard = document.querySelectorAll('.card')[currentCardIndex];
-          if (nextCard) {
-            nextCard.classList.add('active'); // Affiche la carte suivante
-        }
+      function createCard(index) {
+          if (index >= cardData.length) {
+              // Toutes les cartes ont été affichées, montrer le message final
+              showFinalMessage();
+              return;
+          }
 
-    } else {
-        showFinalMessage();
-    }
-     nextCardButton.classList.remove('show');
-}
+          const card = cardData[index];
+          const cardElement = document.createElement('div');
+          cardElement.classList.add('card');
+          if (index === 0) {
+              cardElement.classList.add('active'); // Affiche la première carte
+          }
+          const backClassName = card.className ? `card-back ${card.className}` : 'card-back';
+          cardElement.innerHTML = `
+              <div class="card-front">?</div>
+              <div class="${backClassName}">
+                  <h3>${card.title}</h3>
+                  <p>${card.text}</p>
+              </div>
+          `;
 
-nextCardButton.addEventListener('click', showNextCard);
+        cardElement.addEventListener('click', () => {
+          if (!cardElement.classList.contains('flipped')) {
+              cardElement.classList.add('flipped');
+                // Après avoir retourné la carte, on peut faire une pause si besoin
+              setTimeout(()=>{
+                nextCardButton.classList.add('show'); // Montre le bouton après le délai
+              }, 500);
 
-function showFinalMessage() {
+          }
+      });
+          cardsContainer.appendChild(cardElement);
+      }
 
-      setTimeout(() => {
-        finalMessage.classList.add('show');
-        audioPlayer.classList.add('show');
-        romanticMusic.play();
-        isPlaying = true;
-        playPauseBtn.textContent = '⏸️';
-    }, 600); // Pas de changement ici
+      function showNextCard(){
+          const currentCard = document.querySelector('.card.active');
+          if(currentCard){
+              currentCard.classList.remove('active');
+              currentCard.style.display ="none";
+          }
 
-}
+          currentCardIndex++;
+          if (currentCardIndex < cardData.length) {
+              createCard(currentCardIndex);
+              const nextCard = document.querySelectorAll('.card')[currentCardIndex];
+                if (nextCard) {
+                  nextCard.classList.add('active'); // Affiche la carte suivante
+              }
 
-createFallingHearts();
-animateHearts();
-createCard(currentCardIndex); // Crée la première carte
+          } else {
+              showFinalMessage();
+          }
+          nextCardButton.classList.remove('show');
+      }
+
+      nextCardButton.addEventListener('click', showNextCard);
+
+      function showFinalMessage() {
+
+            setTimeout(() => {
+              finalMessage.classList.add('show');
+              audioPlayer.classList.add('show');
+              romanticMusic.play();
+              isPlaying = true;
+              playPauseBtn.textContent = '⏸️';
+          }, 600); // Pas de changement ici
+
+      }
+
+      createFallingHearts();
+      animateHearts();
+      createCard(currentCardIndex); // Crée la première carte
 
 
     </script>
