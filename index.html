@@ -32,7 +32,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden; /*  Garder hidden pour empêcher le scroll horizontal inutile*/
             perspective: 1000px;
         }
 
@@ -47,6 +47,7 @@
         }
 
         .heart {
+           /* ... (styles .heart inchangés) ... */
             position: absolute;
             width: var(--heart-size);
             height: var(--heart-size);
@@ -56,6 +57,7 @@
         }
 
         @keyframes fall {
+             /* ... (styles @keyframes fall inchangés) ... */
             0% {
                 transform: translateY(-10vh) rotate(0deg);
             }
@@ -65,23 +67,35 @@
         }
 
         @keyframes pulse {
+            /* ... (styles @keyframes pulse, supprimée pour simplifier) ... */
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
 
         #game-container {
-          position: fixed; /* Important pour le plein écran */
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column; /* Ajout pour aligner verticalement */
-          z-index: 10;
-          perspective: 1000px;
-          background: var(--background-gradient); /* Garder l'arrière-plan */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+            perspective: 1000px;
+            background: var(--background-gradient);
+        }
+       .card-container {
+            position: relative; /* Important pour le positionnement absolu des cartes */
+            width: 90%;
+            max-width: 400px;
+            height: auto; /*  Ajustement ici */
+            max-height: 70vh; /* Limite la hauteur du conteneur de la carte */
+            display: flex; /* Ajout pour le centrage de la carte à l'intérieur */
+            justify-content: center; /* Centre horizontalement */
+            align-items: center; /* Centre verticalement */
+
         }
 
         .card {
@@ -92,31 +106,31 @@
             transition: transform 0.6s, box-shadow 0.3s;
             transform-style: preserve-3d;
             cursor: pointer;
-            position: relative;  /*Changement important*/
-            /* Retrait de top, left, transform pour le centrage */
-            width: 90%;
-            max-width: 400px;
-            height: auto; /* Hauteur automatique basée sur le contenu */
-            max-height: 70vh;  /* Limite la hauteur à 70% de la hauteur de la vue */
-            display: none; /* Cacher par défaut */
-            margin-bottom: 20px; /* Espace entre la carte et le bouton */
+            position: absolute; /* Important : position absolue */
+            /* top, left, transform sont gérés par le conteneur parent */
+            width: 100%; /* Occupe toute la largeur du conteneur */
+            height: 100%;  /*Occupe toute la hauteur du conteneur*/
+            display: none; /* Caché par défaut */
+            /* margin-bottom: 20px;  Retrait : plus besoin de marge ici */
+
         }
-         .card.active {
+        .card.active {
             display: flex; /* Afficher la carte active */
-            flex-direction: column; /* Assurer l'empilement vertical */
+            flex-direction: column;
         }
+
 
         .card:hover {
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-             /* animation: pulse 1s infinite;  enlever l'animation pulse  pour la simplification */
+            /* animation: pulse 1s infinite;  Supprimé pour simplifier */
         }
 
         .card.flipped {
-             transform:  rotateY(180deg); /*Retrait du translate */
+            transform: rotateY(180deg);
         }
 
         .card-front, .card-back {
-           position: absolute;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -126,7 +140,6 @@
             align-items: center;
             backface-visibility: hidden;
             border-radius: 15px;
-
         }
 
         .card-front {
@@ -143,10 +156,11 @@
             flex-direction: column;
             padding: 20px;
             text-align: center;
-              overflow-y: auto; /* Permet le défilement si le contenu est trop grand */
+            overflow-y: auto;
         }
 
         .card-back h3 {
+           /* ... (styles .card-back h3 inchangés) ... */
             color: var(--primary-color);
             margin-bottom: 10px;
             font-size: 1.8em;
@@ -154,17 +168,17 @@
         }
 
         .card-back p {
+          /* ... (styles .card-back p inchangés) ... */
             font-size: 1.2em;
             line-height: 1.4;
-             max-height: 70vh; /* Limiter la hauteur du texte, ajuster selon besoin */
-            overflow-y: auto;  /* Barres de défilement si nécessaire */
-            padding-right: 10px; /* Espace pour la barre de défilement */
-
+             max-height: 65vh; /* Limiter un peu plus pour la barre de scroll */
+            overflow-y: auto;
+            padding-right: 10px;
         }
 
         .card-back.poem {
-            /* styles pour le poème restent les mêmes */
-            display: flex;
+            /* ... (styles .card-back.poem inchangés) ... */
+              display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -172,27 +186,30 @@
             padding: 15px;
             line-height: 1.5;
             background: linear-gradient(to bottom right, #fff0f5, #ffefd5);
-
         }
-          .card-back.poem h3{
-              margin-bottom: 10px;
+
+        .card-back.poem h3 {
+            /* ... (styles .card-back.poem h3 inchangés) ... */
+             margin-bottom: 10px;
                 font-size: 2em;
                 color: #ff1493;
                 font-family: 'Dancing Script', cursive;
-          }
-          .card-back.poem p{
-            font-size: 1.1em;
+        }
+
+        .card-back.poem p {
+            /* ... (styles .card-back.poem p inchangés) ... */
+              font-size: 1.1em;
             white-space: pre-wrap;
             font-family: 'Dancing Script', cursive;
             color: #8b008b;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-            max-height: 70vh; /* Important pour le scroll */
+            max-height: 65vh; /* Important pour le scroll */
             overflow-y: auto;  /* Important pour le scroll */
             padding: 0 10px;
-          }
-
+        }
 
         #final-message {
+          /* ... (styles #final-message inchangés) ... */
             display: none;
             background: var(--card-bg);
             border-radius: 15px;
@@ -210,12 +227,14 @@
         }
 
         #final-message.show {
+           /* ... (styles #final-message.show inchangés) ... */
             display: block;
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
         }
 
         #final-message h2 {
+             /* ... (styles #final-message h2 inchangés) ... */
             color: var(--primary-color);
             margin-bottom: 15px;
             font-size: 2.5em;
@@ -223,11 +242,13 @@
         }
 
         #final-message p {
+           /* ... (styles #final-message p inchangés) ... */
             font-size: 1.3em;
             line-height: 1.5;
         }
 
         #audio-player {
+           /* ... (styles #audio-player inchangés) ... */
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -243,11 +264,13 @@
         }
 
         #audio-player.show {
-            opacity: 1;
+            /* ... (styles #audio-player.show inchangés) ... */
+             opacity: 1;
         }
 
         #audio-player button {
-            background: var(--primary-color);
+            /* ... (styles #audio-player button inchangés) ... */
+             background: var(--primary-color);
             border: none;
             color: white;
             border-radius: 50%;
@@ -262,53 +285,55 @@
         }
 
         #audio-player button:hover {
-            transform: scale(1.1);
+           /* ... (styles #audio-player button:hover inchangés) ... */
+             transform: scale(1.1);
         }
 
         #next-card {
-          /* Retrait de position: fixed, bottom, left, transform */
-          background-color: var(--primary-color);
-          color: white;
-          padding: 10px 20px;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          z-index: 1001; /* Au-dessus des cartes */
-          display: none; /* Caché initialement */
-          margin-top: 20px; /* Espace au-dessus du bouton (si besoin) */
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            margin-top: 20px; /* Espace au-dessus du bouton */
+        }
 
-      }
         #next-card.show {
-          display: block;
-      }
-
-
+            display: block;
+        }
 
         @media (max-width: 768px) {
-            /* styles pour mobile restent les mêmes, ajustez si besoin */
-             .card {
-                height: auto;
-                min-height: 120px;
+            /* styles pour mobile, ajustés pour la lisibilité */
+            .card-front {
+                font-size: 2em; /* Réduit la taille de la police sur mobile */
             }
-            .card-front{
-                font-size: 2em;
+            .card-back h3 {
+                font-size: 1.5em; /* Réduit légèrement */
             }
-            .card-back h3{
-                font-size: 1.3em;
+            .card-back p {
+                font-size: 1.1em; /* Réduit légèrement */
+                 max-height: 60vh; /* Ajustement pour les petits écrans */
             }
-            .card-back p{
-                font-size: 1em;
+            .card-back.poem h3 {
+                font-size: 1.8em;/* Réduit légèrement */
             }
-            #final-message h2{
+
+            .card-back.poem p{
+                font-size: 1em;/* Réduit légèrement */
+                max-height: 60vh; /* Ajustement pour les petits écrans */
+            }
+            #final-message h2 {
                 font-size: 1.8em;
             }
-            #final-message p{
+            #final-message p {
                 font-size: 1.1em;
             }
-            #audio-player {
-                bottom: 10px;
-                right: 10px;
-            }
+             .card-container{
+                 max-height: 65vh;
+             }
         }
     </style>
 </head>
@@ -316,10 +341,12 @@
     <div id="hearts-container"></div>
 
     <div id="game-container">
-        <div id="cards-container"></div>
-         <button id="next-card">Suivant</button>
-    </div>
+        <div class="card-container">
+           <div id="cards-container"></div>
+        </div>
 
+        <button id="next-card">Suivant</button>
+    </div>
 
     <div id="final-message">
         <h2>Mon Amour Éternel</h2>
@@ -332,32 +359,31 @@
     </div>
 
     <script>
-      const heartsContainer = document.getElementById('hearts-container');
-      const cardsContainer = document.getElementById('cards-container');
-      const finalMessage = document.getElementById('final-message');
-      const audioPlayer = document.getElementById('audio-player');
-      const playPauseBtn = document.getElementById('play-pause');
-      const volumeControl = document.getElementById('volume-control');
-      const nextCardButton = document.getElementById('next-card');
+        const heartsContainer = document.getElementById('hearts-container');
+        const cardsContainer = document.getElementById('cards-container');
+        const finalMessage = document.getElementById('final-message');
+        const audioPlayer = document.getElementById('audio-player');
+        const playPauseBtn = document.getElementById('play-pause');
+        const volumeControl = document.getElementById('volume-control');
+        const nextCardButton = document.getElementById('next-card');
 
+        const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+        let isPlaying = false;
 
-      const romanticMusic = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU5LjMzLjEwMAAAAAAAAAAAAAAA//NEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
-      let isPlaying = false;
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                romanticMusic.pause();
+                playPauseBtn.textContent = '▶️';
+            } else {
+                romanticMusic.play();
+                playPauseBtn.textContent = '⏸️';
+            }
+            isPlaying = !isPlaying;
+        });
 
-      playPauseBtn.addEventListener('click', () => {
-          if (isPlaying) {
-              romanticMusic.pause();
-              playPauseBtn.textContent = '▶️';
-          } else {
-              romanticMusic.play();
-              playPauseBtn.textContent = '⏸️';
-          }
-          isPlaying = !isPlaying;
-      });
-
-      volumeControl.addEventListener('input', () => {
-          romanticMusic.volume = volumeControl.value;
-      });
+        volumeControl.addEventListener('input', () => {
+            romanticMusic.volume = volumeControl.value;
+        });
 
       const cardData = [
         { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
@@ -383,117 +409,113 @@
             className: "poem"
         }
       ];
-      let currentCardIndex = 0;
+        let currentCardIndex = 0;
 
+        function createFallingHearts() {
+          /* ... (fonction createFallingHearts inchangée) ... */
+             for (let i = 0; i < 100; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heartsContainer.appendChild(heart);
+                resetHeart(heart);
+            }
+        }
 
-      function createFallingHearts() {
-          for (let i = 0; i < 100; i++) {
-              const heart = document.createElement('div');
-              heart.classList.add('heart');
-              heartsContainer.appendChild(heart);
-              resetHeart(heart);
-          }
-      }
+        function resetHeart(heart) {
+           /* ... (fonction resetHeart inchangée) ... */
+            const size = 10 + Math.random() * 50;
+            const speed = 2 + Math.random() * 5;
+            const startX = Math.random() * 100;
+            const opacity = 0.3 + Math.random() * 0.7;
 
-      function resetHeart(heart) {
-          const size = 10 + Math.random() * 50;
-          const speed = 2 + Math.random() * 5;
-          const startX = Math.random() * 100;
-          const opacity = 0.3 + Math.random() * 0.7;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.left = `${startX}vw`;
+            heart.style.top = '-10vh';
+            heart.style.animationDuration = `${speed}s`;
+            heart.style.opacity = opacity;
+        }
 
-          heart.style.width = `${size}px`;
-          heart.style.height = `${size}px`;
-          heart.style.left = `${startX}vw`;
-          heart.style.top = '-10vh';
-          heart.style.animationDuration = `${speed}s`;
-          heart.style.opacity = opacity;
-      }
+        function animateHearts() {
+          /* ... (fonction animateHearts inchangée) ... */
+             const hearts = document.querySelectorAll('.heart');
+            hearts.forEach(heart => {
+                const top = parseFloat(heart.style.top);
+                if (top > 110){
+                    resetHeart(heart);
+                }
+            });
+            requestAnimationFrame(animateHearts);
+        }
 
-      function animateHearts() {
-          const hearts = document.querySelectorAll('.heart');
-          hearts.forEach(heart => {
-              const top = parseFloat(heart.style.top);
-              if (top > 110){
-                  resetHeart(heart);
-              }
-          });
-          requestAnimationFrame(animateHearts);
-      }
+        function createCard(index) {
+            if (index >= cardData.length) {
+                showFinalMessage();
+                return;
+            }
 
-      function createCard(index) {
-          if (index >= cardData.length) {
-              // Toutes les cartes ont été affichées, montrer le message final
-              showFinalMessage();
-              return;
-          }
+            const card = cardData[index];
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            if (index === 0) {
+                cardElement.classList.add('active');
+            }
+            const backClassName = card.className ? `card-back ${card.className}` : 'card-back';
+            cardElement.innerHTML = `
+                <div class="card-front">?</div>
+                <div class="${backClassName}">
+                    <h3>${card.title}</h3>
+                    <p>${card.text}</p>
+                </div>
+            `;
 
-          const card = cardData[index];
-          const cardElement = document.createElement('div');
-          cardElement.classList.add('card');
-          if (index === 0) {
-              cardElement.classList.add('active'); // Affiche la première carte
-          }
-          const backClassName = card.className ? `card-back ${card.className}` : 'card-back';
-          cardElement.innerHTML = `
-              <div class="card-front">?</div>
-              <div class="${backClassName}">
-                  <h3>${card.title}</h3>
-                  <p>${card.text}</p>
-              </div>
-          `;
+            cardElement.addEventListener('click', () => {
+                if (!cardElement.classList.contains('flipped')) {
+                    cardElement.classList.add('flipped');
+                    setTimeout(() => {
+                        nextCardButton.classList.add('show');
+                    }, 500);
+                }
+            });
+            cardsContainer.appendChild(cardElement);
+        }
 
-        cardElement.addEventListener('click', () => {
-          if (!cardElement.classList.contains('flipped')) {
-              cardElement.classList.add('flipped');
-                // Après avoir retourné la carte, on peut faire une pause si besoin
-              setTimeout(()=>{
-                nextCardButton.classList.add('show'); // Montre le bouton après le délai
-              }, 500);
+        function showNextCard() {
+            const currentCard = document.querySelector('.card.active');
+            if (currentCard) {
+                currentCard.classList.remove('active');
+                currentCard.style.display = "none";
+            }
 
-          }
-      });
-          cardsContainer.appendChild(cardElement);
-      }
-
-      function showNextCard(){
-          const currentCard = document.querySelector('.card.active');
-          if(currentCard){
-              currentCard.classList.remove('active');
-              currentCard.style.display ="none";
-          }
-
-          currentCardIndex++;
-          if (currentCardIndex < cardData.length) {
-              createCard(currentCardIndex);
-              const nextCard = document.querySelectorAll('.card')[currentCardIndex];
+            currentCardIndex++;
+            if (currentCardIndex < cardData.length) {
+                createCard(currentCardIndex);
+                const nextCard = document.querySelectorAll('.card')[currentCardIndex]; // Correction ici
                 if (nextCard) {
-                  nextCard.classList.add('active'); // Affiche la carte suivante
-              }
+                    nextCard.classList.add('active');
+                }
+            } else {
+                showFinalMessage();
+            }
+            nextCardButton.classList.remove('show');
+        }
 
-          } else {
-              showFinalMessage();
-          }
-          nextCardButton.classList.remove('show');
-      }
+        nextCardButton.addEventListener('click', showNextCard);
 
-      nextCardButton.addEventListener('click', showNextCard);
-
-      function showFinalMessage() {
-
+        function showFinalMessage() {
             setTimeout(() => {
-              finalMessage.classList.add('show');
-              audioPlayer.classList.add('show');
-              romanticMusic.play();
-              isPlaying = true;
-              playPauseBtn.textContent = '⏸️';
-          }, 600); // Pas de changement ici
+                finalMessage.classList.add('show');
+                audioPlayer.classList.add('show');
+                romanticMusic.play();
+                isPlaying = true;
+                playPauseBtn.textContent = '⏸️';
+            }, 600);
+        }
 
-      }
 
-      createFallingHearts();
-      animateHearts();
-      createCard(currentCardIndex); // Crée la première carte
-
+        createFallingHearts();
+        animateHearts();
+        createCard(currentCardIndex);
 
     </script>
 </body>
