@@ -7,18 +7,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
-     <!--  Intégration de Font Awesome pour les icônes (facultatif, mais sympa) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
-            --primary-color: #e91e63; /* Rose plus moderne */
+            --primary-color: #e91e63;
             --secondary-color: #fff;
-            --bg-color: #fce4ec; /* Rose très pâle */
+            --bg-color: #fce4ec;
             --card-bg: #fff;
-            --text-color: #4a4a4a; /* Gris foncé, meilleur contraste */
-            --title-color: #e91e63; /* Rose pour les titres */
-            --box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombre plus subtile */
-            --heart-size: 25px; /* Cœurs plus petits */
+            --text-color: #4a4a4a;
+            --title-color: #e91e63;
+            --box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --heart-size: 25px;
             --border-radius: 20px;
         }
 
@@ -29,134 +28,18 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif; /* Police moderne, facile à lire */
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden; /* Empêche le scroll horizontal */
-
+            overflow-x: hidden;
         }
 
-        #hearts-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .heart {
-            position: absolute;
-            width: var(--heart-size);
-            height: var(--heart-size);
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e91e63'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center/contain;
-            animation: fall linear infinite;
-            opacity: 0.7;
-            /* Effet de flou pour la profondeur (subtil) */
-            filter: blur(0.5px);
-        }
-
-        @keyframes fall {
-             /* Animation plus naturelle (variation de vitesse, rotation) */
-            0% {
-                transform: translateY(-10vh) rotate(0deg);
-                opacity: 0;  /* Apparition progressive */
-            }
-             20% {
-                opacity: 0.7;
-             }
-
-            100% {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0; /* Disparition progressive */
-            }
-        }
-
-
-        #game-container {
-            position: relative;
-            z-index: 10;
-            width: 95%; /* Légèrement plus étroit */
-            max-width: 450px; /* Légèrement plus large */
-            perspective: 1000px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            margin: 10px 0; /* Moins d'espace */
-            text-align: center;
-            box-shadow: var(--box-shadow);
-            transition: transform 0.6s, box-shadow 0.3s; /* Animation de survol */
-            transform-style: preserve-3d;
-            cursor: pointer;
-            position: relative;
-            height: 180px; /* Hauteur un peu plus grande */
-            overflow: hidden; /* Pour les coins arrondis */
-        }
-        .card:hover{
-             box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Ombre plus prononcée au survol */
-        }
-
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-front, .card-back {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backface-visibility: hidden;
-            border-radius: var(--border-radius); /* Coins arrondis */
-            padding: 20px; /* Plus d'espace à l'intérieur */
-
-        }
-
-        .card-front {
-            /* Dégradé subtil pour la face avant */
-            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(233,30,99,0.2));
-            color: var(--title-color);
-            font-size: 2.5em; /* Légèrement plus petit */
-            font-weight: 700; /* Gras */
-            border: 3px solid var(--primary-color); /* Bordure */
-        }
-         .card-front i {
-            /* Icône Font Awesome (facultatif) */
-            margin-right: 8px;
-             font-size: 0.8em; /* Légèrement plus petit que le texte */
-        }
-
-        .card-back {
-            transform: rotateY(180deg);
-            background: var(--card-bg);
-            flex-direction: column;
-        }
-
-        .card-back h3 {
-            color: var(--title-color);
-            margin-bottom: 10px;
-            font-size: 1.6em;
-             font-family: 'Great Vibes', cursive; /* Police cursive pour les titres */
-             font-weight: 400; /* Moins gras */
-        }
-
-        .card-back p {
-            font-size: 1.1em;
-            line-height: 1.5;
-        }
-
-
-        #final-message {
+        /* ... (le reste de votre CSS, comme dans les versions précédentes, jusqu'à #final-message) ... */
+         #final-message {
             display: none;
             background: var(--card-bg);
             border-radius: var(--border-radius);
@@ -169,17 +52,14 @@
             transform: translate(-50%, -50%);
             z-index: 100;
             max-width: 90%;
-             /* Animation d'apparition (subtile) */
             opacity: 0;
             transition: opacity 0.5s, transform 0.5s;
-            transform: translate(-50%, -50%) scale(0.8); /* Légèrement plus petit au début */
-
+            transform: translate(-50%, -50%) scale(0.8);
         }
 
         #final-message.show {
-             /* Classe ajoutée par JS pour afficher le message */
             opacity: 1;
-             transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         #final-message h2 {
@@ -193,12 +73,49 @@
         #final-message p {
             font-size: 1.2em;
             line-height: 1.6;
+              margin-bottom: 20px; /* Ajout d'espace avant le poème */
+        }
+        /* Style pour le poème */
+        #poem-container {
+            text-align: center;
+            margin-top: 20px;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Media Queries pour la responsivité */
+        #poem-container h3 {
+            color: var(--title-color);
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            font-family: 'Great Vibes', cursive;
+        }
 
+        #poem-container p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        #poem-container p.turkish {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2em;
+            direction: ltr;
+        }
+
+        #poem-container p.translation {
+            font-style: italic;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .author {
+            font-style: italic;
+            color: #777;
+            margin-top: 15px;
+        }
+          /* Media Queries (comme précédemment) */
         @media (max-width: 768px) {
-             .card {
+            /* ... (les styles pour mobile) ... */
+            .card {
                 height: auto; /* La hauteur s'adapte */
                 min-height: 120px;
             }
@@ -230,6 +147,7 @@
                 margin: 5px 0; /* Encore moins d'espace */
             }
         }
+
     </style>
 </head>
 <body>
@@ -240,21 +158,35 @@
     </div>
 
     <div id="final-message">
-        <h2>Mon Amour Éternel</h2>
-        <p>Tu as découvert tous les secrets de mon cœur. Tu es ma joie, ma lumière, mon inspiration.</p>
+        <h2>Aşkım,</h2>
+        <p>Biliyorum hatalıydım ve seni ne kadar incittiğimi anlıyorum. Kalbimin en derin yerinden özür dilerim. Lütfen bana bir şans daha ver. Seni her şeyden çok seviyorum.</p>
+
+        <div id="poem-container">
+            <h3>Senin Güzelliğin</h3>
+            <p class="turkish">O badem gözlerin, Kazak güneşi gibi,<br>
+                Gülüşün, bahar meltemi sanki.<br>
+                Seninle sohbet, sonsuz bir nehir,<br>
+                Kahkahaların, en güzel şiir.</p>
+            <p class="translation">Tes yeux en amande, comme le soleil kazakh,<br>
+                Ton rire, comme une brise printanière.<br>
+                Discuter avec toi, une rivière sans fin,<br>
+                Tes éclats de rire, le plus beau des poèmes.</p>
+            <p class="author">- [Votre nom/pseudo]</p>
+        </div>
     </div>
 
-  <script>
+    <script>
     const heartsContainer = document.getElementById('hearts-container');
     const cardsContainer = document.getElementById('cards-container');
     const finalMessage = document.getElementById('final-message');
 
-    const cardData = [
-        { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
-        { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
-        { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
-        { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." }
+   const cardData = [
+        { title: "Hatamı Kabul Ediyorum", text: "Bir hata yaptım ve seni ne kadar incittiğimi anlıyorum. Çok üzgünüm." },
+        { title: "Duyguların", text: "Kendini [ihanete uğramış, hayal kırıklığına uğramış, incinmiş, kızgın...] hissettiğini anlıyorum. Hak ettiğin gibi davranmadım." },
+        { title: "Sorumluluğum", text: "Hiçbir bahanem yok. Hareketlerimin ve senin üzerindeki etkilerinin tüm sorumluluğunu alıyorum." },
+        { title: "Sana Bağlılığım", text: "Seni derinden seviyorum ve güvenini yeniden kazanmak için ne gerekiyorsa yapmaya hazırım. Seninle [dürüstlük, saygı, iletişim...] üzerine kurulu daha güçlü bir gelecek inşa etmek istiyorum." }
     ];
+
 
      function createFallingHearts() {
         for (let i = 0; i < 70; i++) { // Plus de coeurs
