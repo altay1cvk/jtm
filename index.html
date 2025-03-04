@@ -6,19 +6,16 @@
     <title>Le Jeu de l'Amour ❤️</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #e91e63;
-            --secondary-color: #fff;
-            --bg-color: #fce4ec;
-            --card-bg: #fff;
-            --text-color: #4a4a4a;
-            --title-color: #e91e63;
-            --box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            --heart-size: 25px;
-            --border-radius: 20px;
+        :root { /* Variables CSS pour une maintenance facile */
+            --primary-color: #ff69b4; /* Rose vif */
+            --secondary-color: #ff1493; /* Rose foncé */
+            --background-gradient: linear-gradient(135deg, #ffb3ba, #ffdfba); /* Dégradé pêche */
+            --card-bg: white;
+            --text-color: #333; /* Gris foncé pour le texte */
+            --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --heart-size: 30px; /* Taille de base des coeurs */
         }
 
         * {
@@ -28,125 +25,157 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Parisienne', cursive;  /* Police romantique */
+            background: var(--background-gradient);
             color: var(--text-color);
-            min-height: 100vh;
+            min-height: 100vh; /* Important pour que le dégradé couvre tout */
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            overflow: hidden;  /* Empêche le scroll */
+        }
+        /* Cœurs plus beaux */
+        #hearts-container {
+             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Pour que les clics passent à travers */
+            z-index: 1;
         }
 
-        /* ... (le reste de votre CSS, comme dans les versions précédentes, jusqu'à #final-message) ... */
-         #final-message {
-            display: none;
+        .heart {
+            position: absolute;
+            width: var(--heart-size);
+            height: var(--heart-size);
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff69b4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center/contain;
+           animation: fall linear infinite; /* Animation plus propre */
+            opacity: 0.6;
+        }
+
+         /* Animation des coeurs, plus paramétrable */
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg); /* Commence au-dessus */
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg); /* Va en dessous */
+            }
+        }
+
+        #game-container {
+            position: relative; /* Pour le z-index */
+            z-index: 10;
+            width: 90%;
+            max-width: 400px; /* Limite la taille sur grands écrans */
+            perspective: 1000px; /* Effet 3D */
+        }
+
+        .card {
             background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 30px;
+            border-radius: 15px;
+            margin: 15px 0;  /* Espace entre les cartes */
             text-align: center;
             box-shadow: var(--box-shadow);
-            position: fixed;
+            transition: transform 0.6s; /* Animation de retournement */
+            transform-style: preserve-3d; /* Nécessaire pour le 3D */
+            cursor: pointer;
+            position: relative; /* Important pour les faces avant/arrière */
+            height: 150px; /* Hauteur fixe, pour l'homogénéité*/
+
+        }
+         /* Animation de rotation des cartes */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute; /* Superposition des faces */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex; /* Centrage du contenu */
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden; /* Cache la face arrière */
+             border-radius: 15px; /*bords arrondis*/
+        }
+
+        .card-front {
+            background: var(--background-gradient);
+            color: var(--card-bg);
+            font-size: 3em;
+            font-weight: bold; /* Texte plus visible */
+        }
+
+        .card-back {
+            transform: rotateY(180deg); /* Dos de la carte, retourné */
+            background: var(--card-bg);
+            flex-direction: column; /* Contenu en colonne */
+            padding: 20px; /* Espace autour du texte */
+        }
+
+        .card-back h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em; /* Titres plus grands */
+        }
+        .card-back p {
+            font-size: 1.2em; /* Texte plus grand */
+            line-height: 1.4; /* Meilleure lisibilité */
+        }
+
+        #final-message {
+           display: none; /* Caché au début */
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px; /* Plus d'espace */
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: fixed; /* Reste fixe même si on scroll (peu probable ici) */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 100;
+            z-index: 100; /* Au-dessus de tout */
             max-width: 90%;
-            opacity: 0;
-            transition: opacity 0.5s, transform 0.5s;
-            transform: translate(-50%, -50%) scale(0.8);
-        }
-
-        #final-message.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
         }
 
         #final-message h2 {
-            color: var(--title-color);
+            color: var(--primary-color);
             margin-bottom: 15px;
-            font-size: 2.2em;
-            font-family: 'Great Vibes', cursive;
-            font-weight: 400;
+            font-size: 2.5em; /* Titre plus grand */
         }
 
-        #final-message p {
-            font-size: 1.2em;
-            line-height: 1.6;
-              margin-bottom: 20px; /* Ajout d'espace avant le poème */
-        }
-        /* Style pour le poème */
-        #poem-container {
-            text-align: center;
-            margin-top: 20px;
-            font-family: 'Poppins', sans-serif;
+         #final-message p {
+            font-size: 1.3em;
+            line-height: 1.5;
         }
 
-        #poem-container h3 {
-            color: var(--title-color);
-            font-size: 1.4em;
-            margin-bottom: 10px;
-            font-family: 'Great Vibes', cursive;
-        }
-
-        #poem-container p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: var(--text-color);
-        }
-
-        #poem-container p.turkish {
-            font-family: 'Times New Roman', serif;
-            font-size: 1.2em;
-            direction: ltr;
-        }
-
-        #poem-container p.translation {
-            font-style: italic;
-            color: #777;
-            margin-top: 5px;
-        }
-
-        .author {
-            font-style: italic;
-            color: #777;
-            margin-top: 15px;
-        }
-          /* Media Queries (comme précédemment) */
+        /* Style pour mobile */
         @media (max-width: 768px) {
-            /* ... (les styles pour mobile) ... */
             .card {
-                height: auto; /* La hauteur s'adapte */
-                min-height: 120px;
+                height: auto; /* La hauteur s'adapte au contenu */
+                 min-height: 120px; /* Hauteur minimale */
             }
-            .card-front {
+            .card-front{
                 font-size: 2em;
             }
-             .card-front i {
-                font-size: 0.7em; /* Plus petit sur mobile */
+            .card-back h3{
+                font-size: 1.3em;
             }
-            .card-back h3 {
-                font-size: 1.4em;
-            }
-            .card-back p {
+            .card-back p{
                 font-size: 1em;
             }
-             #final-message h2 {
+            #final-message h2{
                 font-size: 1.8em;
             }
-             #final-message p {
+            #final-message p{
                 font-size: 1.1em;
             }
         }
-        /* Pour les très petits écrans, on ajuste encore */
-        @media (max-width: 480px) {
-             #game-container {
-                width: 100%; /* Prend tout l'espace */
-            }
-             .card {
-                margin: 5px 0; /* Encore moins d'espace */
-            }
-        }
+
 
     </style>
 </head>
@@ -158,21 +187,8 @@
     </div>
 
     <div id="final-message">
-        <h2>Aşkım,</h2>
-        <p>Biliyorum hatalıydım ve seni ne kadar incittiğimi anlıyorum. Kalbimin en derin yerinden özür dilerim. Lütfen bana bir şans daha ver. Seni her şeyden çok seviyorum.</p>
-
-        <div id="poem-container">
-            <h3>Senin Güzelliğin</h3>
-            <p class="turkish">O badem gözlerin, Kazak güneşi gibi,<br>
-                Gülüşün, bahar meltemi sanki.<br>
-                Seninle sohbet, sonsuz bir nehir,<br>
-                Kahkahaların, en güzel şiir.</p>
-            <p class="translation">Tes yeux en amande, comme le soleil kazakh,<br>
-                Ton rire, comme une brise printanière.<br>
-                Discuter avec toi, une rivière sans fin,<br>
-                Tes éclats de rire, le plus beau des poèmes.</p>
-            <p class="author">- [Votre nom/pseudo]</p>
-        </div>
+        <h2>Mon Amour Éternel</h2>
+        <p>Tu as découvert tous les secrets de mon cœur. Tu es ma joie, ma lumière, mon inspiration.</p>
     </div>
 
     <script>
@@ -180,70 +196,70 @@
     const cardsContainer = document.getElementById('cards-container');
     const finalMessage = document.getElementById('final-message');
 
-   const cardData = [
-        { title: "Hatamı Kabul Ediyorum", text: "Bir hata yaptım ve seni ne kadar incittiğimi anlıyorum. Çok üzgünüm." },
-        { title: "Duyguların", text: "Kendini [ihanete uğramış, hayal kırıklığına uğramış, incinmiş, kızgın...] hissettiğini anlıyorum. Hak ettiğin gibi davranmadım." },
-        { title: "Sorumluluğum", text: "Hiçbir bahanem yok. Hareketlerimin ve senin üzerindeki etkilerinin tüm sorumluluğunu alıyorum." },
-        { title: "Sana Bağlılığım", text: "Seni derinden seviyorum ve güvenini yeniden kazanmak için ne gerekiyorsa yapmaya hazırım. Seninle [dürüstlük, saygı, iletişim...] üzerine kurulu daha güçlü bir gelecek inşa etmek istiyorum." }
+    const cardData = [
+        { title: "Premier Regard", text: "Un moment magique qui a tout changé." },
+        { title: "Ton Sourire", text: "Le rayon de soleil qui illumine mes journées." },
+        { title: "Nos Moments", text: "Chaque instant ensemble est un cadeau précieux." },
+        { title: "Notre Connexion", text: "Une harmonie qui dépasse les mots." }
     ];
 
 
-     function createFallingHearts() {
-        for (let i = 0; i < 70; i++) { // Plus de coeurs
+    function createFallingHearts() {
+        for (let i = 0; i < 50; i++) {
             const heart = document.createElement('div');
             heart.classList.add('heart');
             heartsContainer.appendChild(heart);
+
+            // Position, taille et animation aléatoires
             resetHeart(heart);
         }
     }
 
+    // Réinitialise un cœur pour l'animation
     function resetHeart(heart) {
-        const size = 10 + Math.random() * 20; // Cœurs plus petits
-        const speed = 4 + Math.random() * 5;     // Plus lents
-        const startX = Math.random() * 100;
-        const delay = Math.random() * 5;     // Délai de départ aléatoire
+        const size = 10 + Math.random() * 30; // Taille variable
+        const speed = 2 + Math.random() * 3;    // Vitesse variable
+        const startX = Math.random() * 100;   // Position horizontale
 
         heart.style.width = `${size}px`;
         heart.style.height = `${size}px`;
         heart.style.left = `${startX}vw`;
-        heart.style.top = '-10vh';
+        heart.style.top = '-10vh';  // Commence au-dessus
         heart.style.animationDuration = `${speed}s`;
-        heart.style.animationDelay = `${delay}s`; // Délai !
     }
 
 
-    function animateHearts() {
+    // Animation via requestAnimationFrame, plus performant
+     function animateHearts() {
         const hearts = document.querySelectorAll('.heart');
         hearts.forEach(heart => {
+            // Pas besoin de récupérer la position, l'animation CSS s'en charge
             const top = parseFloat(heart.style.top);
-            if (top > 110) {
+            if (top>110){
                 resetHeart(heart);
             }
+
         });
-        requestAnimationFrame(animateHearts);
+        requestAnimationFrame(animateHearts); // Continue l'animation
     }
 
-     function createCards() {
-        cardData.forEach((card, index) => { // Ajout de l'index
+    function createCards() {
+        cardData.forEach((card) => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
-             // Ajout d'une icône Font Awesome (facultatif) : <i class="fas fa-heart"></i>
             cardElement.innerHTML = `
-                <div class="card-front"><i class="fas fa-question"></i>?</div>
+                <div class="card-front">?</div>
                 <div class="card-back">
                     <h3>${card.title}</h3>
                     <p>${card.text}</p>
                 </div>
             `;
             cardElement.addEventListener('click', () => {
-                if (!cardElement.classList.contains('flipped')) {
+                if (!cardElement.classList.contains('flipped')){ //empeche de recliquer
                     cardElement.classList.add('flipped');
-                    // Jouer un son (facultatif) :  flipSound.play();
                     checkAllCardsFlipped();
                 }
             });
-             // Délai progressif pour l'apparition des cartes
-            cardElement.style.animationDelay = `${index * 0.15}s`; // 0.15s de délai entre chaque carte
             cardsContainer.appendChild(cardElement);
         });
     }
@@ -251,22 +267,39 @@
     function checkAllCardsFlipped() {
         const flippedCards = document.querySelectorAll('.card.flipped');
         if (flippedCards.length === cardData.length) {
+             // Délai pour voir la dernière carte
             setTimeout(() => {
-                finalMessage.classList.add('show'); // Utilisation de la classe .show
+                finalMessage.style.display = 'block';
+                 // Animation d'apparition (optionnel, nécessite une librairie comme GSAP)
+                // gsap.from(finalMessage, { opacity: 0, y: 50, duration: 0.5 });
             }, 600);
         }
     }
-    //  (Facultatif) :  Préchargement du son
-    // const flipSound = new Audio('chemin/vers/votre/son.mp3');
-    // flipSound.preload = 'auto';
+
+
+     function handleOrientation(event) {
+      //  const hearts = document.querySelectorAll('.heart');
+      //  const beta = event.beta;
+       // const gamma = event.gamma;
+        //inutile avec l'approche de l'animation CSS
+    }
 
 
     function init() {
         createFallingHearts();
         createCards();
-        animateHearts();
+        animateHearts(); // Utilisation de requestAnimationFrame
+
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+            // Message si l'orientation n'est pas supportée (optionnel)
+            console.log("Device orientation not supported");
+        }
     }
+
     init();
+
     </script>
 </body>
 </html>
