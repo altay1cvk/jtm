@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Le Chemin vers ton Cœur ❤️</title> <!-- Titre plus évocateur -->
+    <style>
+        /* --- CSS (Beaucoup de changements) --- */
+        body {
+            font-family: 'Dancing Script', cursive; /* Autre police cursive */
+            margin: 0;
+            overflow-x: hidden; /* Empêche le scroll horizontal */
+            overflow-y: auto;    /* Permet le scroll vertical (important pour la roadmap) */
+            background: linear-gradient(to bottom, #fcebeb, #ffdddd);
+            color: #6b0f1a;
+            display: flex;
+            flex-direction: column; /* Changement pour la roadmap */
+            align-items: center; /* Centre horizontalement */
+            min-height: 100vh; /* Assure que le dégradé couvre au moins la hauteur de l'écran */
+            position: relative; /* Pour le positionnement absolu des éléments */
+        }
+
+        /* --- Loading Screen --- */
+        #loading-screen {
+            /* ... (style de l'écran de chargement, comme avant) ... */
+            position: fixed; /* Fixe par rapport à la fenêtre */
+            top: 0; left: 0; right: 0; bottom: 0; /* Couvre tout */
+            background: rgba(255, 235, 235, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Au-dessus de tout */
+        }
+
+        #loading-screen img {
+          width: 120px; /* Légèrement plus petit */
+          margin-bottom: 15px;
+          animation: pulse 1.5s infinite ease-in-out; /* Animation de pulsation */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #main-content {
+            position: relative; /* Important pour la roadmap */
+            width: 100%;
+            display: none; /* Caché au début */
+            padding-bottom: 50px; /* Espace en bas pour la fin de la roadmap */
+        }
+
+        /* --- Roadmap Container --- */
+        #roadmap-container {
+            position: relative; /* Pour positionner les étapes */
+            width: 80%; /* Largeur de la roadmap */
+            max-width: 600px; /* Largeur maximale */
+            margin: 50px auto; /* Centrage et marges */
+            padding-top: 20px; /* Espace au-dessus de la première étape */
+
+        }
+
+        /* --- Ligne de la Roadmap --- */
+        .roadmap-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px; /* Épaisseur de la ligne */
+            height: 100%;
+            background-color: #e83e8c;
+            z-index: 1; /* Derrière les étapes */
+        }
+
+        /* --- Étapes de la Roadmap --- */
+        .roadmap-step {
+            position: relative; /* Pour le positionnement des éléments */
+            margin-bottom: 80px; /* Espacement entre les étapes */
+            z-index: 2; /* Au-dessus de la ligne */
+            opacity: 0;     /* Initialement cachées */
+            transform: translateY(50px); /* Légèrement décalées vers le bas */
+            transition: opacity 0.8s ease, transform 0.8s ease; /* Transition douce */
+        }
+
+        .roadmap-step.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .roadmap-step:nth-child(odd) { /* Étapes impaires à gauche */
+            left: 0;
+            text-align: left;
+        }
+        .roadmap-step:nth-child(even) { /* Étapes paires à droite */
+            left: calc( 100% - 180px); /* 150px = largeur de l'étape + marge */
+            text-align: right;
+         }
+
+        .step-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            width: 180px; /* Largeur fixe */
+            position: relative; /*Pour les icon */
+
+        }
+        /*Icon des etapes*/
+        .step-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e83e8c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2em;
+         }
+         .roadmap-step:nth-child(odd) .step-icon {
+            right: -60px; /* Décalage à droite pour les étapes impaires */
+         }
+        .roadmap-step:nth-child(even) .step-icon {
+            left: -60px; /* Décalage à gauche pour les étapes paires */
+        }
+
+        .step-content h3 {
+            font-size: 1.3em;
+            margin-bottom: 0.5em;
+            color: #800020;
+        }
+        .step-content p{
+          font-size: 1.1em;
+        }
+
+        /* --- Coeur Final --- */
+        #final-heart-container {
+            position: relative; /* Pour le positionnement du cœur */
+            height: 200px;      /* Hauteur du conteneur */
+            margin-top: 50px; /* Espacement après la dernière étape */
+            opacity: 0; /* initialement caché */
+            transition: opacity 1s ease;
+        }
+
+        #final-heart-container.active{
+          opacity: 1;
+        }
+
+        #heart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- Texte Final et Poème --- */
+        #final-text {
+            text-align: center;
+            padding: 20px;
+            max-width: 80%;
+            margin: 20px auto; /* Centrage */
+            opacity: 0; /* Initialement caché */
+            transition: opacity 1s ease;
+             position: relative; /* Important pour le z-index */
+            z-index: 100;
+        }
+        #final-text.active{
+          opacity: 1;
+        }
+
+        #final-text h2 {
+            font-size: 2em;
+            color: #a41f39;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5em;
+        }
+        #final-text p {
+          font-size: 1.2em;
+          margin-bottom: 0.5em;
+
+        }
+
+        #poem {
+            margin-top: 1em;
+            font-style: italic;
+        }
+
+        #poem h3 {
+            font-size: 1.5em;
+            color: #800020;
+        }
+
+          /* --- Progress Bar --- */
+
+        #progress-container {
+            position: fixed;
+            bottom: 0; left: 0; right: 0; /* Couvre toute la largeur */
+            height: 6px; /* Plus fin */
+            background-color: #eee;
+            z-index: 3000; /* Au-dessus de tout le reste */
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #e83e8c;
+            transition: width 0.2s ease; /* Transition plus rapide */
+        }
+
+        /* --- Media Queries (adaptations) --- */
+        @media (max-width: 768px) {
+            .roadmap-step:nth-child(odd),
+            .roadmap-step:nth-child(even) {
+                left: 0; /* Toutes les étapes alignées à gauche */
+                text-align: left;
+                margin-left: 30px;
+            }
+            .roadmap-step:nth-child(even) .step-icon,
+            .roadmap-step:nth-child(odd) .step-icon{
+                left: -50px; /* Icone a gauche */
+            }
+            #roadmap-container{
+                width: 95%;
+            }
+            .step-content{
+              width: 90%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Écran de Chargement -->
+    <div id="loading-screen">
+       <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23e83e8c' d='M73.2,31.6C67.5,25.3,58.7,28.8,58.7,36.7c0,4.5,4.1,7.7,8.6,7.7c3.1,0,6.2-1.7,7.9-3.4l0,0 c1.7,1.8,4.8,3.4,7.9,3.4c4.5,0,8.6-3.2,8.6-7.7C91.7,28.8,82.9,25.3,77.2,31.6L77.2,31.6L73.2,31.6z M50,0 C22.4,0,0,22.4,0,50s22.4,50,50,50s50-22.4,50-50S77.6,0,50,0z M26.8,68.4c-1.7-1.7-3.4-4.8-3.4-7.9c0-4.5,3.2-8.6,7.7-8.6 c3.1,0,6.2,1.7,7.9,3.4l0,0c1.7-1.7,4.8-3.4,7.9-3.4c4.5,0,8.6,3.2,8.6,7.7c0,7.9-8.8,11.4-14.5,17.7C40.5,82.8,28.5,70.1,26.8,68.4z M7.7,50c0-4.7,1-8.9,2.6-12.3C5,41,1.5,47.1,1.5,53.9c0,19,13,35.8,31.4,45.1C15.9,88,3.4,71.1,7.7,50z'/%3E%3C/svg%3E" alt="Chargement..." >
+
+        <p>Un instant... je construis le chemin vers ton cœur... ❤️</p>
+    </div>
+
+    <!-- Contenu Principal -->
+    <div id="main-content">
+
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <!-- Roadmap -->
+        <div id="roadmap-container">
+            <div class="roadmap-line"></div>
+
+            <div class="roadmap-step">
+                 <div class="step-icon">1</div>
+                <div class="step-content">
+                    <h3>Premier Regard</h3>
+                    <p>Comme une étoile filante, ton regard a illuminé mon ciel.</p>
+                </div>
+            </div>
+            <div class="roadmap-step">
+              <div class="step-icon">2</div>
+                <div class="step-content">
+                    <h3>Ton Sourire</h3>
+                    <p>Un rayon de soleil qui a fait fondre la glace autour de mon cœur.</p>
+                </div>
+            </div>
+            <div class="roadmap-step">
+               <div class="step-icon">3</div>
+                <div class="step-content">
+                    <h3>Ta Voix</h3>
+                    <p>Une mélodie douce et envoûtante qui résonne encore en moi.</p>
+                </div>
+            </div>
+            <div class="roadmap-step">
+              <div class="step-icon">4</div>
+                <div class="step-content">
+                    <h3>Ta Présence</h3>
+                    <p>Un voile de douceur et de mystère qui m'attire irrésistiblement.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cœur Final (apparaît à la fin) -->
+          <div id="final-heart-container">
+              <canvas id="heart-canvas"></canvas>
+          </div>
+
+          <!-- Texte Final et Poème -->
+          <div id="final-text">
+              <h2>Mon Amour Éternel, Beril</h2>
+                <p>Chaque étape de ce chemin m'a rapproché de toi, de ton cœur pur et de ta beauté infinie.  Tu es mon étoile, ma muse, mon amour.</p>
+              <div id="poem">
+                  <h3>Senin İçin</h3>
+                  <p lang="tr">
+                      Gözlerin, yıldızlar gibi parlar,<br>
+                      Güzelliğin, ruhumu sarar.<br>
+                      Seninle her an, bir rüya,<br>
+                      Aşkım sana, sonsuza...
+                  </p>
+                   <p>
+                    Tes yeux, brillent comme des étoiles,<br>
+                    Ta beauté, enveloppe mon âme.<br>
+                    Chaque instant avec toi est un rêve,<br>
+                    Mon amour pour toi, pour toujours...
+                  </p>
+              </div>
+          </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+// --- JavaScript (Fonctions réorganisées) ---
+
+        // --- Variables Globales ---
+        let scene, camera, renderer, heart; // Une seule instance de cœur
+        let steps; // Stocke les étapes de la roadmap
+        let isScrolling = false; // Pour éviter les déclenchements multiples
+
+
+        // --- Initialisation Three.js (adaptée pour un seul cœur) ---
+      function init3D() {
+          scene = new THREE.Scene();
+          camera = new THREE.PerspectiveCamera(75, 200 / 200, 0.1, 1000); // FOV ajusté
+          camera.position.z = 2.5;
+
+
+          renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('heart-canvas'), alpha: true });
+          renderer.setSize(200, 200); // Taille fixe pour le cœur final
+          renderer.setClearColor(0x000000, 0);
+
+          const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+          scene.add(ambientLight);
+
+          const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+          dirLight.position.set(1, 1, 1);
+          scene.add(dirLight);
+
+          const heartShape = new THREE.Shape();
+          heartShape.moveTo( 25, 25 );
+          heartShape.bezierCurveTo( 25, 25, 20, 0, 0, 0 );
+          heartShape.bezierCurveTo( - 30, 0, - 30, 35, - 30, 35 );
+          heartShape.bezierCurveTo( - 30, 55, - 10, 77, 25, 95 );
+          heartShape.bezierCurveTo( 60, 77, 80, 55, 80, 35 );
+          heartShape.bezierCurveTo( 80, 35, 80, 0, 50, 0 );
+          heartShape.bezierCurveTo( 35, 0, 25, 25, 25, 25 );
+
+          const extrudeSettings = {
+              steps: 1,
+              depth: 4,  //profondeur de l'extrusion
+              bevelEnabled: true,
+              bevelThickness: 2, // epaisseur du biseau
+              bevelSize: 2,      //taille du biseau
+              bevelSegments: 3  //segment
+          };
+          const geometry = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
+          const material = new THREE.MeshPhongMaterial({ color: 0xe83e8c, shininess: 60 }); // Plus brillant
+          heart = new THREE.Mesh(geometry, material);
+          heart.scale.set(0.04, 0.04, 0.04);   // Taille ajustée pour le conteneur
+          scene.add(heart);
+      }
+
+
+      // --- Animation du cœur ---
+      function animateHeart() {
+        if (heart) {
+            heart.rotation.y += 0.02;
+            heart.rotation.x += 0.01;
+          }
+      }
+
+      function handleOrientation(event) {
+          const beta = event.beta;
+          const gamma = event.gamma;
+
+          const rotationY = THREE.MathUtils.clamp(gamma, -30, 30) / 30 * Math.PI / 5;
+          const rotationX = THREE.MathUtils.clamp(beta, -30, 30) / 30 * Math.PI / 5;
+
+            if(heart){
+              heart.rotation.y = rotationY;
+              heart.rotation.x = rotationX;
+            }
+      }
+
+      // --- Fonction d'animation principale ---
+      function animate() {
+          requestAnimationFrame(animate);
+          animateHeart();
+          renderer.render(scene, camera);
+      }
+
+      // --- Gestion du scroll (Roadmap) ---
+      function checkStepsVisibility() {
+        if (isScrolling) return;
+        isScrolling = true;
+
+        steps.forEach(step => {
+            const rect = step.getBoundingClientRect();
+            const isVisible = (rect.top <= window.innerHeight * 0.8) && (rect.bottom >= 0); // 80% visible
+
+              if (isVisible) {
+                step.classList.add('active');
+              }
+          });
+
+        // Afficher le cœur et le texte final si on est en bas de page
+        const finalHeartContainer = document.getElementById('final-heart-container');
+        const finaltext = document.getElementById("final-text");
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) { // 100px de marge
+              finalHeartContainer.classList.add('active');
+              finaltext.classList.add("active")
+          }
+        setTimeout(() => { isScrolling = false; }, 100); // Debounce
+      }
+
+      // --- Chargement initial ---
+      document.addEventListener("DOMContentLoaded", function() {
+        const progressBar = document.getElementById('progress-bar');
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainContent = document.getElementById('main-content');
+        steps = document.querySelectorAll('.roadmap-step'); // Récupère les étapes
+        let progress = 0;
+
+        const interval = setInterval(() => {
+            progress += 2;
+            progressBar.style.width = progress + '%';
+
+             if (progress >= 100) {
+                clearInterval(interval);
+                loadingScreen.style.transition = "opacity 0.8s ease-out";
+                loadingScreen.style.opacity = 0;
+                 setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    mainContent.style.display = 'flex'; // Affiche le contenu
+                     init3D(); // Initialise après le chargement
+                    animate();  // Lance l'animation
+                    checkStepsVisibility(); // Vérifie la visibilité initiale
+                }, 800);
+            }
+        }, 20);
+
+        // Écoute le scroll pour afficher les étapes
+        window.addEventListener('scroll', checkStepsVisibility);
+      });
+
+       // --- Redimensionnement ---
+      function onWindowResize() {
+         if (renderer && camera){
+            camera.aspect = 200 / 200; // Maintient l'aspect carré
+            camera.updateProjectionMatrix();
+            renderer.setSize(200, 200); // Taille fixe
+        }
+      }
+          // --- Gestionnaires d'événements ---
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+             // Fallback pour les appareils sans gyroscope (souris)
+            document.addEventListener('mousemove', (event) => {
+              handleOrientation({
+                  beta: (-(event.clientY / window.innerHeight) + 0.5) * 60,  // Adapte la plage à -30/30
+                  gamma: ((event.clientX / window.innerWidth) - 0.5) * 60
+              });
+          });
+        }
+        window.addEventListener('resize', onWindowResize, false);
+
+    </script>
+</body>
+</html>
